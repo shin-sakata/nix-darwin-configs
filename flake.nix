@@ -33,7 +33,7 @@
         name = "shin";
         home = "/Users/shin";
       };
-      nix.settings.trusted-users = [ "root" "shin"];
+      nix.settings.trusted-users = [ "root" "shin" ];
       system.configurationRevision = self.rev or self.dirtyRev or null;
       system.stateVersion = 6;
       nixpkgs.hostPlatform = "aarch64-darwin";
