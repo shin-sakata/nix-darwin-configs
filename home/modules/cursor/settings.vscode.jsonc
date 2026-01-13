@@ -1,0 +1,13 @@
+{
+    "window.commandCenter": true,
+    "workbench.activityBar.orientation": "vertical",
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "./vscode/settings.json",
+                "**/settings.vscode.jsonc"
+            ],
+            "url": "vscode://schemas/settings/folder"
+      }
+    ]
+}

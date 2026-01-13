@@ -1,8 +1,0 @@
-{
-    "recommendations": [
-        "ms-ceintl.vscode-language-pack-ja",
-        "jnoortheen.nix-ide",
-        "rust-lang.rust-analyzer",
-        "mkhl.direnv",
-    ]
-}

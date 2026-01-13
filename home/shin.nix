@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./modules/cursor.nix
+    ./modules/cursor/cursor.nix
   ];
 
   xdg.enable = true;
