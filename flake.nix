@@ -17,9 +17,13 @@
     nix-homebrew = {
       url = "github:zhaofengli-wip/nix-homebrew";
     };
+
+    claude-code-nix = {
+      url = "github:sadjow/claude-code-nix";
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nix-homebrew, ... }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nix-homebrew, claude-code-nix, ... }:
   let
     configuration = { pkgs, ... }: {
       environment.systemPackages =
@@ -27,6 +31,9 @@
         ];
 
       nix.settings.experimental-features = "nix-command flakes";
+      nixpkgs.overlays = [
+        claude-code-nix.overlays.default
+      ];
       nixpkgs.config.allowUnfree = true;
       system.primaryUser = "shin";
       users.users.shin = {

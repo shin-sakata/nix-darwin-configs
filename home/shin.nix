@@ -15,7 +15,7 @@
     pkgs.podman
     pkgs.podman-compose
     (pkgs.writeShellScriptBin "docker" ''exec podman "$@"'')
-    pkgs.claude-code
+    (pkgs.claude-code-bun.override { bunBinName = "claude"; })
   ];
 
   programs.ssh = {
