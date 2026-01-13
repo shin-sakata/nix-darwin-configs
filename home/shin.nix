@@ -15,6 +15,7 @@
     pkgs.podman
     pkgs.podman-compose
     (pkgs.writeShellScriptBin "docker" ''exec podman "$@"'')
+    (pkgs.writeShellScriptBin "switch" ''${builtins.readFile ../bin/switch.sh}'')
   ];
 
   programs.ssh = {
