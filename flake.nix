@@ -49,6 +49,7 @@
           "cursor"
           "1password"
           "google-chrome"
+          "slack"
         ];
       };
     };
