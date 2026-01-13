@@ -38,10 +38,10 @@ dotfiles や ユーザーレベルの cli パッケージ等の管理をして�
 $ curl -sSf -L https://install.lix.systems/lix | sh -s -- install
 ```
 
-nix-dawrin の適用
+nix-dawrin の初回適用
 
 ```
-$ ./switch.sh
+$ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
 ```
 
 ## GUI アプリケーションの個別具体設定
@@ -50,5 +50,5 @@ $ ./switch.sh
 
 ## その後の使い方
 
-- nix ファイル等を修正後 ./switch.sh
+- nix ファイル等を修正後 ./bin/switch.sh
 - たまに gc などしてね
