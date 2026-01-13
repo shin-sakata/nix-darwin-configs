@@ -2,7 +2,11 @@
 
 {
   imports = [
-    ./modules/cursor/cursor.nix
+    ./modules/cursor.nix
+    ./modules/ssh.nix
+    ./modules/git.nix
+    ./modules/direnv.nix
+    ./modules/zsh.nix
   ];
 
   xdg.enable = true;
@@ -17,39 +21,4 @@
     (pkgs.writeShellScriptBin "docker" ''exec podman "$@"'')
     (pkgs.claude-code-bun.override { bunBinName = "claude"; })
   ];
-
-  programs.ssh = {
-    enable = true;
-    enableDefaultConfig = false;
-    matchBlocks."*" = {
-      identityAgent = "~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock";
-    };
-  };
-
-  programs.git = {
-    enable = true;
-    settings = {
-      core.editor = "cursor";
-      user = {
-        name = "shin-sakata";
-        email = "shintaro.sakata.tokyo@gmail.com";
-      };
-    };
-    ignores = [ ".direnv" ];
-  };
-
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    initContent = ''
-      PROMPT='%n@%m:%1~ %# '
-    '';
-  };
-
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
 }
