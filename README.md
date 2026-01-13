@@ -50,6 +50,5 @@ $ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
 
 ## その後の使い方
 
-- nix ファイル等を修正後 `switch`
-  - bin/switch.sh を switch として path に通しているのでこれが効く
+- nix ファイル等を修正後 `sudo darwin-rebuild switch --flake .`
 - たまに gc などしてね
