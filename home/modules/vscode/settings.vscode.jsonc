@@ -12,4 +12,8 @@
     ],
     "github.copilot.nextEditSuggestions.enabled": true,
     "workbench.iconTheme": "material-icon-theme",
+    "chat.tools.terminal.autoApprove": {
+        "printf": true,
+        "nix": true
+    }
 }
