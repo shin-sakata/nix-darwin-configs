@@ -23,65 +23,81 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nix-homebrew, claude-code-nix, ... }:
-  let
-    configuration = { pkgs, ... }: {
-      environment.systemPackages =
-        [ # pkgs.vim
-        ];
-
-      nix.settings.experimental-features = "nix-command flakes";
-      nixpkgs.overlays = [
-        claude-code-nix.overlays.default
-      ];
-      nixpkgs.config.allowUnfree = true;
-      system.primaryUser = "shin";
-      users.users.shin = {
-        name = "shin";
-        home = "/Users/shin";
-      };
-      nix.settings.trusted-users = [ "root" "shin" ];
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-      system.stateVersion = 6;
-      nixpkgs.hostPlatform = "aarch64-darwin";
-
-      homebrew = {
-        enable = true;
-        onActivation = {
-          autoUpdate = true;
-          cleanup = "zap";
-        };
-
-        casks = [
-          "visual-studio-code"
-          "cursor"
-          "1password"
-          "google-chrome"
-          "slack"
-        ];
-      };
-    };
-  in
-  {
-    darwinConfigurations."shinnoMacBook-Pro" = nix-darwin.lib.darwinSystem {
-      modules = [
-        configuration
-        nix-homebrew.darwinModules.nix-homebrew
+  outputs =
+    inputs@{
+      self,
+      nix-darwin,
+      nixpkgs,
+      home-manager,
+      nix-homebrew,
+      claude-code-nix,
+      ...
+    }:
+    let
+      configuration =
+        { pkgs, ... }:
         {
-          nix-homebrew = {
-            enable = true;
-            user = "shin";
-            autoMigrate = true;
+          environment.systemPackages = [
+            # pkgs.vim
+          ];
+
+          nix.settings.experimental-features = "nix-command flakes";
+          nixpkgs.overlays = [
+            claude-code-nix.overlays.default
+          ];
+          nixpkgs.config.allowUnfree = true;
+          system.primaryUser = "shin";
+          users.users.shin = {
+            name = "shin";
+            home = "/Users/shin";
           };
-        }
+          nix.settings.trusted-users = [
+            "root"
+            "shin"
+          ];
+          system.configurationRevision = self.rev or self.dirtyRev or null;
+          system.stateVersion = 6;
+          nixpkgs.hostPlatform = "aarch64-darwin";
 
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.shin = import ./home/shin.nix;
-        }
-      ];
+          homebrew = {
+            enable = true;
+            onActivation = {
+              autoUpdate = true;
+              cleanup = "zap";
+            };
+
+            casks = [
+              "visual-studio-code"
+              "cursor"
+              "1password"
+              "google-chrome"
+              "slack"
+            ];
+          };
+        };
+    in
+    {
+      formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-rfc-style;
+
+      darwinConfigurations."shinnoMacBook-Pro" = nix-darwin.lib.darwinSystem {
+        modules = [
+          configuration
+          nix-homebrew.darwinModules.nix-homebrew
+          {
+            nix-homebrew = {
+              enable = true;
+              user = "shin";
+              autoMigrate = true;
+            };
+          }
+
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.shin = import ./home/shin.nix;
+          }
+        ];
+      };
     };
-  };
 }
