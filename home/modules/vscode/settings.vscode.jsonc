@@ -9,5 +9,6 @@
             ],
             "url": "vscode://schemas/settings/folder"
       }
-    ]
+    ],
+    "github.copilot.nextEditSuggestions.enabled": true
 }

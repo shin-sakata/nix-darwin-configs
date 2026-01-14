@@ -3,6 +3,7 @@
 {
   imports = [
     ./modules/cursor.nix
+    ./modules/vscode.nix
     ./modules/ssh.nix
     ./modules/git.nix
     ./modules/direnv.nix

@@ -53,6 +53,7 @@
         };
 
         casks = [
+          "visual-studio-code"
           "cursor"
           "1password"
           "google-chrome"
