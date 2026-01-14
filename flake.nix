@@ -18,8 +18,8 @@
       url = "github:zhaofengli-wip/nix-homebrew";
     };
 
-    claude-code-nix = {
-      url = "github:sadjow/claude-code-nix";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
     };
   };
 
@@ -30,7 +30,6 @@
       nixpkgs,
       home-manager,
       nix-homebrew,
-      claude-code-nix,
       ...
     }:
     let
@@ -41,20 +40,25 @@
             # pkgs.vim
           ];
 
-          nix.settings.experimental-features = "nix-command flakes";
-          nixpkgs.overlays = [
-            claude-code-nix.overlays.default
-          ];
+          security.pam.services.sudo_local.touchIdAuth = true;
+
+          nix.settings = {
+            experimental-features = "nix-command flakes";
+            trusted-users = [
+              "root"
+              "shin"
+            ];
+            extra-substituters = [ "https://cache.numtide.com" ];
+            extra-trusted-public-keys = [
+              "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+            ];
+          };
           nixpkgs.config.allowUnfree = true;
           system.primaryUser = "shin";
           users.users.shin = {
             name = "shin";
             home = "/Users/shin";
           };
-          nix.settings.trusted-users = [
-            "root"
-            "shin"
-          ];
           system.configurationRevision = self.rev or self.dirtyRev or null;
           system.stateVersion = 6;
           nixpkgs.hostPlatform = "aarch64-darwin";
@@ -95,6 +99,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.shin = import ./home/shin.nix;
           }
         ];

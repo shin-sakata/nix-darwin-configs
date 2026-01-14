@@ -1,8 +1,13 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }:
+let
+  system = pkgs.stdenv.hostPlatform.system;
+  agents = inputs.llm-agents.packages.${system};
+in
 {
   imports = [
     ./modules/cursor.nix
@@ -23,6 +28,8 @@
     pkgs.podman
     pkgs.podman-compose
     (pkgs.writeShellScriptBin "docker" ''exec podman "$@"'')
-    (pkgs.claude-code-bun.override { bunBinName = "claude"; })
+    agents.claude-code
+    agents.gemini-cli
+    agents.codex
   ];
 }

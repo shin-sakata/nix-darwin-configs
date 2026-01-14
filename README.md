@@ -52,3 +52,13 @@ $ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
 
 - nix ファイル等を修正後 `sudo darwin-rebuild switch --flake .`
 - たまに gc などしてね
+
+## sudo を Touch ID（指紋認証）で通す
+
+このリポジトリの nix-darwin 設定で `sudo` の認証に Touch ID を使うよう有効化している。
+反映するには `sudo darwin-rebuild switch --flake .` を実行する。
+
+注意:
+
+- 非対話的な実行（CI / 一部のスクリプトなど）では Touch ID が使えず、パスワードが必要になることがある
+- macOS の挙動や設定次第で、最初の一回はパスワード入力が必要なケースがある
