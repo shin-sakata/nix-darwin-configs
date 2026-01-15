@@ -18,7 +18,7 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
 
 ## リポジトリ構造
 ```
-% tree -L 5 --filelimit 30 -a -I .git
+% tree -L 5 --filelimit 30 -a -I .git 
 .
 ├── .cursorrules -> AGENTS.md
 ├── .github
@@ -30,6 +30,8 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
 ├── flake.nix
 ├── home
 │   ├── modules
+│   │   ├── cursor
+│   │   │   └── settings.vscode.jsonc -> ../vscode/settings.vscode.jsonc
 │   │   ├── cursor.nix
 │   │   ├── direnv.nix
 │   │   ├── git.nix
@@ -41,7 +43,7 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
 │   └── shin.nix
 └── README.md
 
-5 directories, 16 files
+6 directories, 17 files
 ```
 
 ### `flake.nix`
