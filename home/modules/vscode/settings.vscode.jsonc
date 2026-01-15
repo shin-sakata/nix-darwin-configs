@@ -15,5 +15,6 @@
     "chat.tools.terminal.autoApprove": {
         "printf": true,
         "nix": true
-    }
+    },
+    "direnv.restart.automatic": true,
 }
