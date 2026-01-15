@@ -28,7 +28,7 @@ shin の個人的な M5 MacBook Pro の構成管理を `nix-darwin` + `nix-homeb
 ## リポジトリ構造
 
 ```
-$ tree -L 5 --filelimit 30 -a -I .git
+% tree -L 5 --filelimit 30 -a -I .git
 .
 ├── .cursorrules -> AGENTS.md
 ├── .github
@@ -50,6 +50,8 @@ $ tree -L 5 --filelimit 30 -a -I .git
 │   │   └── zsh.nix
 │   └── shin.nix
 └── README.md
+
+5 directories, 16 files
 ```
 
 ### `flake.nix`
