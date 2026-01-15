@@ -69,4 +69,4 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
 - `nix flake update`
 - `sudo darwin-rebuild check --flake .`
 - `sudo darwin-rebuild switch --flake .`
-  - このコマンドはシステムの変更が入るため、慎重に行うかユーザーに任せる
+  - このコマンドはシステムの変更が入るため、変更点等を確認し慎重に行うか、ユーザーに任せる
