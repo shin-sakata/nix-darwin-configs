@@ -65,7 +65,8 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
   - 1password GUI アプリを開き、cli と ssh agent の設定を有効化させる
 
 ## COMMANDS
-- `nix fmt`
+- `nix fmt .`
+- `nix flake update`
 - `sudo darwin-rebuild check --flake .`
 - `sudo darwin-rebuild switch --flake .`
   - このコマンドはシステムの変更が入るため、慎重に行うかユーザーに任せる
