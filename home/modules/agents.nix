@@ -8,5 +8,6 @@ in
     agents.claude-code
     agents.gemini-cli
     agents.codex
+    agents.opencode
   ];
 }
