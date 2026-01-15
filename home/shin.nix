@@ -1,15 +1,7 @@
-{
-  pkgs,
-  config,
-  inputs,
-  ...
-}:
-let
-  system = pkgs.stdenv.hostPlatform.system;
-  agents = inputs.llm-agents.packages.${system};
-in
+{ pkgs, config, ... }:
 {
   imports = [
+    ./modules/agents.nix
     ./modules/cursor.nix
     ./modules/vscode.nix
     ./modules/ssh.nix
@@ -29,8 +21,5 @@ in
     pkgs.podman-compose
     (pkgs.writeShellScriptBin "docker" ''exec podman "$@"'')
     pkgs.tree
-    agents.claude-code
-    agents.gemini-cli
-    agents.codex
   ];
 }
