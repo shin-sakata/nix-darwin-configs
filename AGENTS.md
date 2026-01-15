@@ -83,4 +83,6 @@ shin の個人的な M5 MacBook Pro の構成管理を `nix-darwin` + `nix-homeb
 ## COMMANDS
 
 - `nix fmt`
+- `sudo darwin-rebuild check --flake .`
 - `sudo darwin-rebuild switch --flake .`
+  - このコマンドはシステムの変更が入るため、慎重に行うかユーザーに任せる
