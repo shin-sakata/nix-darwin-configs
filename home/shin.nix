@@ -28,6 +28,7 @@ in
     pkgs.podman
     pkgs.podman-compose
     (pkgs.writeShellScriptBin "docker" ''exec podman "$@"'')
+    pkgs.tree
     agents.claude-code
     agents.gemini-cli
     agents.codex
