@@ -16,7 +16,6 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
     - ユーザーレベルの構成を管理
     - dotfiles や CLI アプリケーション等
 
-
 ## リポジトリ構造
 ```
 % tree -L 5 --filelimit 30 -a -I .git
