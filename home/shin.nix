@@ -17,9 +17,6 @@
     pkgs._1password-cli
     pkgs.nodejs-slim_24
     pkgs.nodejs-slim_24.pkgs.pnpm
-    pkgs.podman
-    pkgs.podman-compose
-    (pkgs.writeShellScriptBin "docker" ''exec podman "$@"'')
     pkgs.tree
   ];
 }
