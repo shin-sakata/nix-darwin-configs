@@ -31,6 +31,7 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
 ├── home
 │   ├── modules
 │   │   ├── agents.nix
+│   │   ├── containers.nix
 │   │   ├── cursor
 │   │   │   └── settings.vscode.jsonc -> ../vscode/settings.vscode.jsonc
 │   │   ├── cursor.nix
@@ -44,7 +45,7 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
 │   └── shin.nix
 └── README.md
 
-6 directories, 18 files
+6 directories, 19 files
 ```
 
 ### `flake.nix`
