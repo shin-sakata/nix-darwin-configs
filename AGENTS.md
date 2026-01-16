@@ -76,3 +76,4 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
   - このコマンドはシステムの変更が入るため、変更点等を確認し慎重に行うか、ユーザーに任せる
 - `sudo nix-collect-garbage --delete-older-than 7d`
 - `sudo nix store optimise`
+  - 割とクリーンな状態でも 5min ぐらい掛かったので注意
