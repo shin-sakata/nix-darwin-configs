@@ -2,8 +2,8 @@
 {
   imports = [
     ./modules/agents.nix
-    ./modules/cursor.nix
-    ./modules/vscode.nix
+    ./modules/cursor
+    ./modules/vscode
     ./modules/ssh.nix
     ./modules/git.nix
     ./modules/direnv.nix

@@ -33,14 +33,14 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
 │   │   ├── agents.nix
 │   │   ├── containers.nix
 │   │   ├── cursor
+│   │   │   ├── default.nix
 │   │   │   └── settings.vscode.jsonc -> ../vscode/settings.vscode.jsonc
-│   │   ├── cursor.nix
 │   │   ├── direnv.nix
 │   │   ├── git.nix
 │   │   ├── ssh.nix
 │   │   ├── vscode
+│   │   │   ├── default.nix
 │   │   │   └── settings.vscode.jsonc
-│   │   ├── vscode.nix
 │   │   └── zsh.nix
 │   └── shin.nix
 └── README.md
