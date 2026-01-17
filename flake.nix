@@ -76,6 +76,7 @@
               "1password"
               "google-chrome"
               "slack"
+              "ghostty"
             ];
           };
         };
