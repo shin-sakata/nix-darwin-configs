@@ -17,4 +17,10 @@
         "nix": true
     },
     "direnv.restart.automatic": true,
+    "chat.tools.urls.autoApprove": {
+        "https://opencode.ai": {
+            "approveRequest": true,
+            "approveResponse": true
+        }
+    },
 }
