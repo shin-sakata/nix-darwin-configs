@@ -1,7 +1,7 @@
 { pkgs, config, ... }:
 {
   imports = [
-    ./modules/agents.nix
+    ./modules/agents
     ./modules/cursor
     ./modules/vscode
     ./modules/ssh.nix
