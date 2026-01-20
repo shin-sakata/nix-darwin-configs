@@ -14,7 +14,8 @@
     "workbench.iconTheme": "material-icon-theme",
     "chat.tools.terminal.autoApprove": {
         "printf": true,
-        "nix": true
+        "nix": true,
+        "pnpm": true,
     },
     "direnv.restart.automatic": true,
     "chat.tools.urls.autoApprove": {
