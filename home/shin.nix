@@ -10,6 +10,7 @@
     ./modules/agents
     ./modules/cursor
     ./modules/vscode
+    ./modules/opencode
     ./modules/ssh.nix
     ./modules/git.nix
     ./modules/direnv.nix
