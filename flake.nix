@@ -21,6 +21,10 @@
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
     };
+
+    lazyvim = {
+      url = "github:pfassina/lazyvim-nix";
+    };
   };
 
   outputs =
@@ -30,6 +34,7 @@
       nixpkgs,
       home-manager,
       nix-homebrew,
+      lazyvim,
       ...
     }:
     let

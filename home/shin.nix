@@ -1,6 +1,12 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 {
   imports = [
+    inputs.lazyvim.homeManagerModules.default
     ./modules/agents
     ./modules/cursor
     ./modules/vscode
@@ -12,6 +18,17 @@
 
   xdg.enable = true;
   home.stateVersion = "26.05";
+
+  programs.lazyvim = {
+    enable = true;
+    installCoreDependencies = true;
+    extras = {
+      lang.nix.enable = true;
+      lang.typescript.enable = true;
+      lang.json.enable = true;
+      lang.git.enable = true;
+    };
+  };
 
   home.packages = [
     pkgs._1password-cli
