@@ -4,14 +4,11 @@ let
   agents = inputs.llm-agents.packages.${system};
 in
 {
-  imports = [
-    ./claude.nix
-  ];
-
   home.packages = [
     agents.gemini-cli
     agents.codex
     agents.opencode
+    agents.claude-code
   ];
 
   # OpenCode global rules
