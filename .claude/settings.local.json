@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(sudo darwin-rebuild:*)"
+      "Bash(sudo darwin-rebuild:*)",
+      "Bash(nix flake check:*)",
+      "Bash(git -C /Users/shin/Projects/shin-sakata/nix-darwin status:*)",
+      "Bash(nix fmt:*)"
     ]
   }
 }
