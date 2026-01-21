@@ -1,13 +1,13 @@
 # AGENTS.md
 
 ## 概要
-このファイルは LLM AGENT (OpenCode, Claude Code, Codex, Gemini CLI など) 向けのベースルールを定義しています。
+このファイルは LLM AGENT 向けのベースルールを定義しています。
 
 ## AGENT としてのルール
 - 常に日本語で解答せよ
 - コードの品質と保守性を重視せよ
 - 変更を行う前に、既存のコードスタイルとパターンを理解せよ
-- 不明な点がある場合は、推測せずユーザーに確認せよ
+- 自律的に tool を活用して、実装を進めること
 
 ## コーディング哲学
 - **Infrastructure as Code**: すべての設定は宣言的に管理する
@@ -29,7 +29,7 @@
 - エディタ: Cursor, VSCode
 - シェル: Zsh
 - バージョン管理: Git + 1Password SSH Agent
-- コンテナ: Docker, OrbStack
+- コンテナ: Docker (podman への alias)
 - パッケージマネージャー: Nix, Homebrew, pnpm
 
 ## セキュリティ

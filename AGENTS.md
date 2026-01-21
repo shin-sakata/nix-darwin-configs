@@ -30,22 +30,26 @@ AGENTS.md は LLM AGENT 向けに書かれた README.md である
 ├── flake.nix
 ├── home
 │   ├── modules
-│   │   ├── agents.nix
+│   │   ├── agents
+│   │   │   ├── AGENTS.md
+│   │   │   └── default.nix
 │   │   ├── containers.nix
 │   │   ├── cursor
 │   │   │   ├── default.nix
+│   │   │   ├── keybindings.vscode.jsonc -> ../vscode/keybindings.vscode.jsonc
 │   │   │   └── settings.vscode.jsonc -> ../vscode/settings.vscode.jsonc
 │   │   ├── direnv.nix
 │   │   ├── git.nix
 │   │   ├── ssh.nix
 │   │   ├── vscode
 │   │   │   ├── default.nix
+│   │   │   ├── keybindings.vscode.jsonc
 │   │   │   └── settings.vscode.jsonc
 │   │   └── zsh.nix
 │   └── shin.nix
 └── README.md
 
-6 directories, 19 files
+7 directories, 22 files
 ```
 
 ### `flake.nix`
