@@ -17,11 +17,6 @@ in
   # OpenCode global rules
   xdg.configFile."opencode/AGENTS.md".source = ./AGENTS.md;
 
-  # Cursor 用のシンボリックリンク
-  home.file.".cursorrules" = {
-    source = ./AGENTS.md;
-  };
-
   # Claude Code 用のシンボリックリンク
   home.file."CLAUDE.md" = {
     source = ./AGENTS.md;
