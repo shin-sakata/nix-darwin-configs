@@ -11,15 +11,8 @@ in
     agents.opencode
   ];
 
-  # AGENTS.md をホームディレクトリに配置
-  home.file.".config/AGENTS.md" = {
-    source = ./AGENTS.md;
-  };
-
-  # OpenCode 用の設定ファイルへのシンボリックリンク
-  home.file."AGENTS.md" = {
-    source = ./AGENTS.md;
-  };
+  # OpenCode global rules
+  xdg.configFile."opencode/AGENTS.md".source = ./AGENTS.md;
 
   # Cursor 用のシンボリックリンク
   home.file.".cursorrules" = {
