@@ -24,4 +24,5 @@
             "approveResponse": true
         }
     },
+    "editor.minimap.enabled": false,
 }
