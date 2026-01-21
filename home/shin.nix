@@ -8,8 +8,6 @@
   imports = [
     inputs.lazyvim.homeManagerModules.default
     ./modules/agents
-    ./modules/cursor
-    ./modules/vscode
     ./modules/ssh.nix
     ./modules/git.nix
     ./modules/direnv.nix
