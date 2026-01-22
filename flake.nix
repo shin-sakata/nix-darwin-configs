@@ -25,6 +25,8 @@
     lazyvim = {
       url = "github:pfassina/lazyvim-nix";
     };
+
+    claude-code-nix.url = "github:sadjow/claude-code-nix";
   };
 
   outputs =
