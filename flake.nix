@@ -45,7 +45,24 @@
             # pkgs.vim
           ];
 
-          security.pam.services.sudo_local.touchIdAuth = true;
+          # TouchID は無効化（iPhone からのリモートアクセス用）
+          security.pam.services.sudo_local.touchIdAuth = false;
+
+          # NOPASSWD 設定（sudoers.d にファイルを配置）
+          environment.etc."sudoers.d/nopasswd".text = ''
+            shin ALL=(ALL) NOPASSWD: ALL
+          '';
+
+          # 電源管理設定: 電源接続時はディスプレイのみスリープ、システムは起動したまま
+          system.activationScripts.postActivation.text = ''
+            # 電源接続時 (-c): ディスプレイは10分でスリープ、システムはスリープしない
+            /usr/bin/pmset -c displaysleep 10 sleep 0 disksleep 0
+
+            # バッテリー駆動時 (-b): 通常通りスリープ
+            /usr/bin/pmset -b displaysleep 5 sleep 15
+
+            echo "電源管理設定を適用しました"
+          '';
 
           nix.settings = {
             experimental-features = "nix-command flakes";
@@ -82,6 +99,7 @@
               "google-chrome"
               "slack"
               "ghostty"
+              "tailscale"
             ];
           };
         };
