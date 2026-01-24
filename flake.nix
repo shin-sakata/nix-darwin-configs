@@ -96,6 +96,7 @@
               "slack"
               "ghostty"
               "tailscale"
+              "claude"
             ];
           };
         };

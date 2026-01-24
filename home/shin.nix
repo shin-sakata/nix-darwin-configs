@@ -22,5 +22,7 @@
     pkgs.nodejs-slim_24
     pkgs.nodejs-slim_24.pkgs.pnpm
     pkgs.tree
+    pkgs.playwright-mcp # bin/mcp-server-playwright
+    pkgs.playwright
   ];
 }
