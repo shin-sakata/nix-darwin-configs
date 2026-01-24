@@ -2,15 +2,14 @@
 let
   system = pkgs.stdenv.hostPlatform.system;
   agents = inputs.llm-agents.packages.${system};
-  claude-code-nix = inputs.claude-code-nix.packages.${system};
 in
 {
   home.packages = [
     agents.gemini-cli
     agents.codex
     agents.opencode
-    # agents.claude-code 現在 bun ランタイム環境で動作しないため
-    claude-code-nix.claude-code
+    agents.claude-code
+    # claude-code-nix.claude-code
   ];
 
   # OpenCode global rules
