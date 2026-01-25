@@ -97,6 +97,7 @@
               "ghostty"
               "tailscale"
               "claude"
+              "docker"
             ];
           };
         };

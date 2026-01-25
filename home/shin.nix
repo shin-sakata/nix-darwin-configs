@@ -11,7 +11,6 @@
     ./modules/git.nix
     ./modules/direnv.nix
     ./modules/zsh.nix
-    ./modules/containers.nix
   ];
 
   xdg.enable = true;
