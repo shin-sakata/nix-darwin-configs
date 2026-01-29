@@ -98,6 +98,7 @@
               "tailscale"
               "claude"
               "docker"
+              "discord"
             ];
           };
         };
