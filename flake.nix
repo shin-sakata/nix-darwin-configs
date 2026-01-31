@@ -99,6 +99,7 @@
               "claude"
               "docker"
               "discord"
+              "chatbox"
             ];
           };
         };
