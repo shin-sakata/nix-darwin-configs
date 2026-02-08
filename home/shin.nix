@@ -21,7 +21,7 @@
     pkgs.nodejs-slim_24
     pkgs.nodejs-slim_24.pkgs.pnpm
     pkgs.tree
-    pkgs.atlas
     pkgs.gh
+    pkgs.ripgrep
   ];
 }
