@@ -103,6 +103,7 @@
               "docker"
               "discord"
               "chatbox"
+              "codex-app"
             ];
           };
         };
