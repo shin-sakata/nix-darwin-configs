@@ -21,9 +21,6 @@
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
     };
-    claude-code-nix = {
-      url = "github:sadjow/claude-code-nix";
-    };
 
   };
 

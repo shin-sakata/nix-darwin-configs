@@ -26,11 +26,10 @@
 - バックアップの存在を確認してから大きな変更を適用せよ
 
 ## 開発環境
-- エディタ: Cursor, VSCode
+- エディタ: VSCode
 - シェル: Zsh
 - バージョン管理: Git + 1Password SSH Agent
-- コンテナ: Docker (podman への alias)
-- パッケージマネージャー: Nix, Homebrew, pnpm
+- パッケージマネージャー: Nix, pnpm
 
 ## セキュリティ
 - SSH キーは 1Password で管理
