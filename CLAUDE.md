@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 概要
 
-shin の M5 MacBook Pro (aarch64-darwin) の構成管理リポジトリ。すべての設定を宣言的に管理する。
+shin の M5 MacBook Pro (aarch64-darwin) の構成管理リポジトリ。すべての設定を宣言的に管理する。Nix 互換実装の **Lix** を使用。
 
 ## アーキテクチャ
 
@@ -14,7 +14,18 @@ shin の M5 MacBook Pro (aarch64-darwin) の構成管理リポジトリ。すべ
 - **nix-homebrew** (`flake.nix` の `homebrew.casks`): GUI アプリケーションのインストール管理。バージョン管理は Homebrew に委任し、リストから削除すればアンインストールされる (`cleanup = "zap"`)
 - **home-manager** (`home/shin.nix` → `home/modules/`): ユーザーレベル設定（CLI ツール、dotfiles、シェル設定）
 
-エントリーポイントは `flake.nix`。home-manager は nix-darwin の module として統合されている。
+エントリーポイントは `flake.nix`。darwin 構成名は `shinnoMacBook-Pro`。home-manager は nix-darwin の module として統合されている。
+
+### home-manager モジュール構成
+
+`home/shin.nix` が home-manager のエントリーポイント。各モジュールは `home/modules/` 以下に分離:
+
+- `agents/default.nix`: Claude Code のインストール（`llm-agents.nix` flake 経由）と `~/.claude/CLAUDE.md` へのシンボリックリンク管理
+- `git.nix`, `ssh.nix`, `zsh.nix`, `direnv.nix`: 各ツールの設定
+
+### 注意すべき flake inputs
+
+- `llm-agents` (`github:numtide/llm-agents.nix`): Claude Code パッケージの提供元。numtide のバイナリキャッシュ (`cache.numtide.com`) を substituter として設定済み
 
 ## コマンド
 
@@ -31,6 +42,9 @@ sudo darwin-rebuild check --flake .
 # 構成の適用（システム変更を伴うため慎重に。ユーザーに確認を取ること）
 sudo darwin-rebuild switch --flake .
 
+# 初回セットアップ（新規マシン構築時のみ）
+sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
+
 # ガベージコレクション
 sudo nix-collect-garbage --delete-older-than 7d
 
@@ -46,6 +60,7 @@ sudo -H nix store optimise
 - 破壊的な変更を行う前にユーザーの確認を取れ
 - SSH キーと Git 署名は 1Password 経由で管理されている。機密情報をコードに含めないこと
 - 新しいモジュールを追加した場合は `home/shin.nix` の `imports` に追加が必要
+- TouchID による sudo 認証は無効化されている（iPhone からのリモートアクセス用途のため）
 
 ## nix-darwin における例外
 

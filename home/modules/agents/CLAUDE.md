@@ -1,4 +1,4 @@
-# AGENTS.md
+# CLAUDE.md
 
 ## 概要
 このファイルは LLM AGENT 向けのベースルールを定義しています。
