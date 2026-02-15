@@ -11,4 +11,7 @@ in
 
   # Claude Code 用のシンボリックリンク
   home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
+
+  # Claude Code カスタムエージェント
+  home.file.".claude/agents/spec-writer.md".source = ./claude-agents/spec-writer.md;
 }
