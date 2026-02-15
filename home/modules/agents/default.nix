@@ -22,6 +22,7 @@ in
         "Bash"
         "WebFetch"
         "WebSearch"
+        "mcp__ide__getDiagnostics"
       ];
       defaultMode = "plan";
       additionalDirectories = [
