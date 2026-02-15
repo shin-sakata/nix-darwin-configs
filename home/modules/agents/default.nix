@@ -6,6 +6,7 @@ in
 {
   home.packages = [
     agents.claude-code
+    agents.codex
   ];
 
   # Claude Code 用のシンボリックリンク
