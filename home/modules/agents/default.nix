@@ -31,6 +31,7 @@ in
     };
     enabledPlugins = {
       "claude-md-management@claude-plugins-official" = true;
+      "ralph-loop@claude-plugins-official" = true;
     };
     language = "日本語";
   };
