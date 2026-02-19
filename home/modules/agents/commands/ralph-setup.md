@@ -58,13 +58,28 @@ $ARGUMENTS が指定されている場合、それをタスクの初期情報と
 
 ### Step 5: 確認と実行
 
-組み立てた ralph-loop コマンド全体をユーザーに提示する:
+組み立てたプロンプト・完了条件・反復回数をユーザーに提示し、確認を得る。
 
-```
-/ralph-loop [プロンプト] --completion-promise '[条件]' --max-iterations [N]
+**重要: ralph-loop の呼び出し手順**
+
+長いプロンプト（特に日本語マルチライン）を Skill tool の引数として直接渡すと、シェルのフラグ解析に失敗する。必ず以下の手順で実行すること:
+
+1. プロンプト全文を `.claude/ralph-prompt-{task-id}.local.md` に書き出す
+2. ralph-loop の状態ファイル `.claude/ralph-loop.local.md` を直接作成する:
+
+```markdown
+---
+active: true
+iteration: 1
+max_iterations: [N]
+completion_promise: "[条件]"
+started_at: "[ISO 8601 タイムスタンプ]"
+---
+
+[.claude/ralph-prompt-{task-id}.local.md の内容をここに展開]
 ```
 
-ユーザーの確認を得てから、Skill tool で `ralph-loop` を実行する。
+3. 状態ファイルを作成したら、プロンプトの内容に従って作業を開始する
 
 ## 重要な注意事項
 
