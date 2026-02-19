@@ -125,7 +125,31 @@ started_at: "[ISO 8601 タイムスタンプ]"
 
 3. 状態ファイルを作成したら、プロンプトの内容に従って作業を開始する
 
-## ralph-setup / ralph-pre-setup の関係
+## エビデンス保存規約
+
+ralph-loop 内で行った調査・検証の結果は、`/ralph-pr` で PR 用 markdown を生成する際の入力となる。以下の規約に従って保存すること。
+
+**保存先:** `agent_docs/{issue-id}/`
+
+```
+agent_docs/{issue-id}/
+  screenshots/          ← スクリーンショット（UI 検証時）
+    01-before.png
+    02-after.png
+  logs/                 ← ブラウザ・サーバーログの抜粋
+    browser-console.txt
+    server-error.txt
+  task-breakdown.md     ← タスク分解ドキュメント（本コマンドの主出力）
+  verification-report.local.md  ← 検証結果サマリー
+```
+
+**プロンプトに必ず含めること:**
+
+- 検証で得たエビデンス（スクショ、ログ、テスト結果等）を上記ディレクトリに保存する指示
+- `verification-report.local.md` に検証結果のサマリーを書く指示
+- このサマリーには「何を検証し、結果がどうだったか」を簡潔にまとめる
+
+## ralph コマンドの全体フロー
 
 ```
 曖昧な issue
@@ -134,13 +158,16 @@ started_at: "[ISO 8601 タイムスタンプ]"
 /ralph-pre-setup  ← 検証手段の確立・タスク明瞭化
     │
     ▼
-タスク分解ドキュメント (agent_docs/*.md)
+agent_docs/{issue-id}/  ← エビデンス + タスク分解ドキュメント
     │
     ▼
 /ralph-setup      ← 明確なタスクに対する実装ループの構築
     │
     ▼
-/ralph-loop       ← 実装の実行
+/ralph-loop       ← 実装の実行（エビデンスも agent_docs/ に追記）
+    │
+    ▼
+/ralph-pr         ← agent_docs/ を読んで PR 用 markdown を生成
 ```
 
 ## エビデンス収集による明瞭化

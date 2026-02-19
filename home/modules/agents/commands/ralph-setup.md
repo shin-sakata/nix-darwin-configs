@@ -81,6 +81,29 @@ started_at: "[ISO 8601 タイムスタンプ]"
 
 3. 状態ファイルを作成したら、プロンプトの内容に従って作業を開始する
 
+## エビデンス保存規約
+
+ralph-loop 内で行った検証の結果は、`/ralph-pr` で PR 用 markdown を生成する際の入力となる。以下の規約に従って保存すること。
+
+**保存先:** `agent_docs/{issue-id}/`
+
+```
+agent_docs/{issue-id}/
+  screenshots/          ← スクリーンショット（UI 検証時）
+    01-before.png
+    02-after.png
+  logs/                 ← ブラウザ・サーバーログの抜粋
+    browser-console.txt
+    server-error.txt
+  verification-report.local.md  ← 検証結果サマリー
+```
+
+**プロンプトに必ず含めること:**
+
+- 検証で得たエビデンス（スクショ、ログ、テスト結果等）を上記ディレクトリに保存する指示
+- `verification-report.local.md` に検証結果のサマリーを書く指示
+- このサマリーには「何を検証し、結果がどうだったか」を簡潔にまとめる
+
 ## 重要な注意事項
 
 - completion-promise は Claude が嘘をつけない仕組み。真に検証可能な条件のみ設定すること

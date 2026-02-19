@@ -13,6 +13,7 @@ in
   home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
   home.file.".claude/commands/ralph-setup.md".source = ./commands/ralph-setup.md;
   home.file.".claude/commands/ralph-pre-setup.md".source = ./commands/ralph-pre-setup.md;
+  home.file.".claude/commands/ralph-pr.md".source = ./commands/ralph-pr.md;
 
   # Claude Code のグローバル設定
   home.file.".claude/settings.json".text = builtins.toJSON {
