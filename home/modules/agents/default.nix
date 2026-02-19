@@ -27,7 +27,7 @@ in
         "WebSearch"
         "mcp__ide__getDiagnostics"
       ];
-      defaultMode = "plan";
+      defaultMode = "bypassPermissions";
       additionalDirectories = [
         "/Users/shin/Projects/shin-sakata"
       ];
