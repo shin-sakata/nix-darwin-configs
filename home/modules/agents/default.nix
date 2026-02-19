@@ -11,6 +11,7 @@ in
 
   # Claude Code 用のシンボリックリンク
   home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
+  home.file.".claude/commands/ralph-setup.md".source = ./commands/ralph-setup.md;
 
   # Claude Code のグローバル設定
   home.file.".claude/settings.json".text = builtins.toJSON {
@@ -34,11 +35,10 @@ in
       "ralph-loop@claude-plugins-official" = true;
     };
     language = "日本語";
+    mcpServers = {
+      notion = {
+        url = "https://mcp.notion.com/sse";
+      };
+    };
   };
-
-  # Claude Code カスタムエージェント
-  home.file.".claude/agents/project-init.md".source = ./claude-agents/project-init.md;
-  home.file.".claude/agents/spec-writer.md".source = ./claude-agents/spec-writer.md;
-  home.file.".claude/agents/spec-executor.md".source = ./claude-agents/spec-executor.md;
-  home.file.".claude/agents/spec-verifier.md".source = ./claude-agents/spec-verifier.md;
 }
