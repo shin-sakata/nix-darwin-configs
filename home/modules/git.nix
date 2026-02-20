@@ -9,6 +9,9 @@
         email = "shintaro.sakata.tokyo@gmail.com";
       };
     };
-    ignores = [ ".direnv" "*.local.md" ];
+    ignores = [
+      ".direnv"
+      "*.local.*"
+    ];
   };
 }
