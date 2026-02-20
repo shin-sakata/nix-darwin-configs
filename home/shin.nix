@@ -23,5 +23,6 @@
     pkgs.tree
     pkgs.gh
     pkgs.ripgrep
+    pkgs.tmux
   ];
 }
