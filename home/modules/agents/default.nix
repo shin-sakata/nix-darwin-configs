@@ -27,7 +27,6 @@ in
         "WebSearch"
         "mcp__ide__getDiagnostics"
       ];
-      defaultMode = "bypassPermissions";
       additionalDirectories = [
         "/Users/shin/Projects/shin-sakata"
       ];
@@ -37,10 +36,5 @@ in
       "ralph-loop@claude-plugins-official" = true;
     };
     language = "日本語";
-    mcpServers = {
-      notion = {
-        url = "https://mcp.notion.com/sse";
-      };
-    };
   };
 }
