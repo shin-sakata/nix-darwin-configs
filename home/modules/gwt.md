@@ -35,6 +35,9 @@ gwt track -s copy .env.local     # copy で追跡（worktree ごとに内容を�
 gwt status                       # 各ファイルの状態を表示（OK / MISSING / MODIFIED 等）
 gwt push                         # copy ファイルの変更を store に反映（全件）
 gwt push .env.local              # 特定ファイルだけ反映
+gwt pull                         # store から全追跡ファイルを配布（既存はスキップ）
+gwt pull .envrc                  # 特定ファイルだけ配布
+gwt pull -f                      # 既存ファイルを上書きして配布
 gwt add -b feature/bar           # 新 worktree 作成時に store から自動配布
 ```
 

@@ -330,6 +330,69 @@
         fi
       }
 
+      # @cmd store から追跡ファイルを現在の worktree に配布する
+      # @arg file ファイルパス（省略で全追跡ファイル）
+      # @flag -f --force  既存ファイルを上書きする
+      pull() {
+        _require_store || return 1
+
+        local target_file="''${argc_file}"
+        local store
+        store=$(_store_dir) || return 1
+        local manifest
+        manifest=$(_manifest)
+        local wt_root
+        wt_root=$(_worktree_root) || return 1
+
+        local pulled=0
+
+        while IFS=: read -r strategy filepath; do
+          [[ -z "$strategy" ]] && continue
+
+          if [[ -n "$target_file" ]] && [[ "$filepath" != "$target_file" ]]; then
+            continue
+          fi
+
+          local wt_file="''${wt_root}/''${filepath}"
+          local store_file="''${store}/''${filepath}"
+
+          if [[ ! -f "$store_file" ]]; then
+            echo "スキップ: ''${filepath} (store に存在しません)" >&2
+            continue
+          fi
+
+          if ([[ -e "$wt_file" ]] || [[ -L "$wt_file" ]]) && [[ -z "$argc_force" ]]; then
+            echo "スキップ: ''${filepath} (既に存在します。-f で上書き)" >&2
+            continue
+          fi
+
+          # 既存ファイル/リンクを削除してから配布
+          if [[ -e "$wt_file" ]] || [[ -L "$wt_file" ]]; then
+            command rm "$wt_file"
+          fi
+
+          mkdir -p "$(dirname "$wt_file")"
+
+          if [[ "$strategy" == "symlink" ]]; then
+            ln -s "$store_file" "$wt_file"
+            echo "pull (symlink): ''${filepath}"
+          elif [[ "$strategy" == "copy" ]]; then
+            cp "$store_file" "$wt_file"
+            echo "pull (copy): ''${filepath}"
+          fi
+          pulled=$((pulled + 1))
+        done < "$manifest"
+
+        if [[ "$pulled" -eq 0 ]]; then
+          if [[ -n "$target_file" ]]; then
+            echo "エラー: ''${target_file} は追跡されていません" >&2
+            return 1
+          else
+            echo "pull 対象のファイルはありません"
+          fi
+        fi
+      }
+
       eval "$(argc --argc-eval "$0" "$@")"
     '')
   ];
