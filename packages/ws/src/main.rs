@@ -16,12 +16,22 @@ struct Ws {
 #[derive(FromArgs)]
 #[argh(subcommand)]
 enum WsCommand {
+    Init(InitCmd),
     New(NewCmd),
     Rm(RmCmd),
     List(ListCmd),
     Status(StatusCmd),
     Shared(SharedCmd),
     I(InteractiveCmd),
+}
+
+/// bare リポジトリを初期化する
+#[derive(FromArgs)]
+#[argh(subcommand, name = "init")]
+struct InitCmd {
+    /// リモート URL（省略で空の bare リポジトリを作成）
+    #[argh(positional)]
+    url: Option<String>,
 }
 
 /// worktree を作成して VSCode で開く
@@ -143,9 +153,39 @@ struct ManifestEntry {
     filepath: String,
 }
 
+/// カレントディレクトリ直下の `.bare` を検出する
+fn find_bare_dir() -> Option<PathBuf> {
+    let bare = PathBuf::from(".bare");
+    if bare.is_dir() && bare.join("HEAD").is_file() {
+        Some(bare)
+    } else {
+        None
+    }
+}
+
+/// Git worktree 内にいるかどうかを判定する
+fn is_inside_git_worktree() -> bool {
+    Command::new("git")
+        .args(["rev-parse", "--is-inside-work-tree"])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false)
+}
+
 fn git_output(args: &[&str]) -> Result<String> {
-    let output = Command::new("git")
-        .args(args)
+    let mut cmd = Command::new("git");
+
+    if !is_inside_git_worktree() {
+        if let Some(bare_dir) = find_bare_dir() {
+            cmd.arg("--git-dir").arg(&bare_dir);
+        }
+    }
+
+    cmd.args(args);
+
+    let output = cmd
         .output()
         .with_context(|| format!("git {} の実行に失敗しました", args.join(" ")))?;
 
@@ -158,13 +198,21 @@ fn git_output(args: &[&str]) -> Result<String> {
 }
 
 fn store_dir() -> Result<PathBuf> {
-    let common_dir = git_output(&["rev-parse", "--git-common-dir"])
-        .context("git リポジトリ内で実行してください")?;
+    // まず git rev-parse --git-common-dir を試す
+    if let Ok(common_dir) = git_output(&["rev-parse", "--git-common-dir"]) {
+        let canonical = fs::canonicalize(&common_dir)
+            .with_context(|| format!("パスの正規化に失敗しました: {}", common_dir))?;
+        return Ok(canonical.join("worktree-store"));
+    }
 
-    let canonical = fs::canonicalize(&common_dir)
-        .with_context(|| format!("パスの正規化に失敗しました: {}", common_dir))?;
+    // フォールバック: .bare ディレクトリを探す
+    if let Some(bare_dir) = find_bare_dir() {
+        let canonical = fs::canonicalize(&bare_dir)
+            .with_context(|| format!("パスの正規化に失敗しました: {}", bare_dir.display()))?;
+        return Ok(canonical.join("worktree-store"));
+    }
 
-    Ok(canonical.join("worktree-store"))
+    bail!("git リポジトリ内で実行してください")
 }
 
 fn require_store() -> Result<PathBuf> {
@@ -276,6 +324,34 @@ fn read_input(prompt: &str) -> Result<String> {
     Ok(buf.trim().to_string())
 }
 
+// --- コマンド: init ---
+
+fn cmd_init(cmd: &InitCmd) -> Result<()> {
+    let bare_dir = PathBuf::from(".bare");
+    if bare_dir.exists() {
+        bail!(".bare は既に存在します");
+    }
+
+    let status = if let Some(ref url) = cmd.url {
+        Command::new("git")
+            .args(["clone", "--bare", url, ".bare"])
+            .status()
+            .context("git clone --bare の実行に失敗しました")?
+    } else {
+        Command::new("git")
+            .args(["init", "--bare", ".bare"])
+            .status()
+            .context("git init --bare の実行に失敗しました")?
+    };
+
+    if !status.success() {
+        bail!("bare リポジトリの作成に失敗しました");
+    }
+
+    println!(".bare を作成しました");
+    Ok(())
+}
+
 // --- コマンド: new ---
 
 fn generate_name() -> String {
@@ -290,13 +366,36 @@ fn cmd_new(cmd: &NewCmd) -> Result<()> {
 
     let branch = cmd.branch.clone().unwrap_or_else(|| name.clone());
 
-    let directory = cmd
-        .directory
-        .clone()
-        .unwrap_or_else(|| format!("../{}", name));
+    let is_bare_root = !is_inside_git_worktree() && find_bare_dir().is_some();
+    let directory = cmd.directory.clone().unwrap_or_else(|| {
+        if is_bare_root {
+            name.clone()
+        } else {
+            format!("../{}", name)
+        }
+    });
 
-    let branch_exists = Command::new("git")
+    let mut check_cmd = Command::new("git");
+    if is_bare_root {
+        check_cmd.arg("--git-dir").arg(".bare");
+    }
+    let branch_exists = check_cmd
         .args(["show-ref", "--verify", "--quiet", &format!("refs/heads/{}", branch)])
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false);
+
+    let start_point = cmd.from.as_deref().unwrap_or("HEAD");
+
+    // 起点の参照が有効かチェック（空の bare リポジトリでは HEAD が無効）
+    let mut rev_parse_cmd = Command::new("git");
+    if is_bare_root {
+        rev_parse_cmd.arg("--git-dir").arg(".bare");
+    }
+    let start_point_valid = rev_parse_cmd
+        .args(["rev-parse", "--verify", "--quiet", start_point])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()
         .map(|s| s.success())
         .unwrap_or(false);
@@ -304,13 +403,21 @@ fn cmd_new(cmd: &NewCmd) -> Result<()> {
     let args = if branch_exists {
         // 既存ブランチをチェックアウト
         vec!["worktree", "add", &directory, &branch]
-    } else {
+    } else if start_point_valid {
         // 新規ブランチを作成
-        let start_point = cmd.from.as_deref().unwrap_or("HEAD");
         vec!["worktree", "add", "-b", &branch, &directory, start_point]
+    } else if cmd.from.is_none() {
+        // --from 省略 & HEAD が無効（空リポジトリ等）→ orphan ブランチで作成
+        vec!["worktree", "add", "--orphan", "-b", &branch, &directory]
+    } else {
+        bail!("指定された起点 '{}' が見つかりません", start_point);
     };
 
-    let status = Command::new("git")
+    let mut git_cmd = Command::new("git");
+    if is_bare_root {
+        git_cmd.arg("--git-dir").arg(".bare");
+    }
+    let status = git_cmd
         .args(&args)
         .status()
         .context("git worktree add の実行に失敗しました")?;
@@ -708,6 +815,7 @@ fn cmd_shared_pull(cmd: &SharedPullCmd) -> Result<()> {
 
 fn interactive_mode() -> Result<()> {
     let top_items = &[
+        "init      bare リポジトリを初期化",
         "new       workspace を作成",
         "rm        workspace を削除",
         "list      worktree 一覧表示",
@@ -727,6 +835,7 @@ fn interactive_mode() -> Result<()> {
     let cmd = selected.split_whitespace().next().unwrap_or("");
 
     let args = match cmd {
+        "init" => interactive_init()?,
         "new" => interactive_new()?,
         "rm" => interactive_rm()?,
         "list" => vec!["list".to_string()],
@@ -749,6 +858,15 @@ fn interactive_mode() -> Result<()> {
     Ok(())
 }
 
+fn interactive_init() -> Result<Vec<String>> {
+    let url_input = read_input("リモート URL (空で空の bare リポジトリ)")?;
+    let mut args = vec!["init".to_string()];
+    if !url_input.is_empty() {
+        args.push(url_input);
+    }
+    Ok(args)
+}
+
 fn interactive_new() -> Result<Vec<String>> {
     let default_name = generate_name();
     let name_input = read_input(&format!("名前 [default: {}]", default_name))?;
@@ -758,7 +876,12 @@ fn interactive_new() -> Result<Vec<String>> {
         name_input
     };
 
-    let default_dir = format!("../{}", name);
+    let is_bare_root = !is_inside_git_worktree() && find_bare_dir().is_some();
+    let default_dir = if is_bare_root {
+        name.clone()
+    } else {
+        format!("../{}", name)
+    };
     let dir_input = read_input(&format!("場所 [default: {}]", default_dir))?;
 
     let default_branch = &name;
@@ -872,6 +995,7 @@ fn interactive_shared_track() -> Result<Vec<String>> {
 
 fn run(ws: Ws) -> Result<()> {
     match ws.command {
+        WsCommand::Init(cmd) => cmd_init(&cmd),
         WsCommand::New(cmd) => cmd_new(&cmd),
         WsCommand::Rm(cmd) => cmd_rm(&cmd),
         WsCommand::List(_) => cmd_list(),
