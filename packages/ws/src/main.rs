@@ -18,8 +18,10 @@ struct Ws {
 enum WsCommand {
     New(NewCmd),
     Rm(RmCmd),
+    List(ListCmd),
     Status(StatusCmd),
     Shared(SharedCmd),
+    I(InteractiveCmd),
 }
 
 /// worktree を作成して VSCode で開く
@@ -35,14 +37,28 @@ struct NewCmd {
     directory: Option<String>,
 }
 
-/// worktree を対話的に選択して削除する
+/// 指定した worktree を削除する
 #[derive(FromArgs)]
 #[argh(subcommand, name = "rm")]
 struct RmCmd {
+    /// 削除する worktree のパス
+    #[argh(positional)]
+    directory: String,
+
     /// 未コミットの変更があっても強制削除する
     #[argh(switch, short = 'f')]
     force: bool,
 }
+
+/// worktree 一覧を表示する
+#[derive(FromArgs)]
+#[argh(subcommand, name = "list")]
+struct ListCmd {}
+
+/// 対話的にコマンドを組み立てて実行する
+#[derive(FromArgs)]
+#[argh(subcommand, name = "i")]
+struct InteractiveCmd {}
 
 /// workspace 一覧と shared ファイル状態を統合表示する
 #[derive(FromArgs)]
@@ -338,37 +354,22 @@ fn cmd_new(cmd: &NewCmd) -> Result<()> {
     Ok(())
 }
 
+// --- コマンド: list ---
+
+fn cmd_list() -> Result<()> {
+    let output = git_output(&["worktree", "list"])?;
+    println!("{}", output);
+    Ok(())
+}
+
 // --- コマンド: rm ---
 
 fn cmd_rm(cmd: &RmCmd) -> Result<()> {
-    let worktree_list = git_output(&["worktree", "list"])?;
-    let lines: Vec<&str> = worktree_list.lines().skip(1).collect();
-
-    if lines.is_empty() {
-        println!("削除可能な worktree はありません");
-        return Ok(());
-    }
-
-    let selected = fzf_select(&lines, "削除する worktree を選択:")?;
-
-    let selected = match selected {
-        Some(s) => s,
-        None => {
-            println!("キャンセルしました");
-            return Ok(());
-        }
-    };
-
-    let path = selected
-        .split_whitespace()
-        .next()
-        .context("worktree のパスを取得できませんでした")?;
-
     let mut args = vec!["worktree", "remove"];
     if cmd.force {
         args.push("--force");
     }
-    args.push(path);
+    args.push(&cmd.directory);
 
     let status = Command::new("git")
         .args(&args)
@@ -723,6 +724,7 @@ fn interactive_mode() -> Result<()> {
     let top_items = &[
         "new       workspace を作成",
         "rm        workspace を削除",
+        "list      worktree 一覧表示",
         "status    全体の状態表示",
         "shared    共有ファイル管理",
     ];
@@ -738,37 +740,69 @@ fn interactive_mode() -> Result<()> {
 
     let cmd = selected.split_whitespace().next().unwrap_or("");
 
-    match cmd {
-        "new" => interactive_new(),
-        "rm" => cmd_rm(&RmCmd { force: false }),
-        "status" => cmd_status(),
-        "shared" => interactive_shared(),
+    let args = match cmd {
+        "new" => interactive_new()?,
+        "rm" => interactive_rm()?,
+        "list" => vec!["list".to_string()],
+        "status" => vec!["status".to_string()],
+        "shared" => interactive_shared()?,
         _ => bail!("不明なコマンド: {}", cmd),
+    };
+
+    let cmd_str = format!("ws {}", args.join(" "));
+    eprintln!("> {}", cmd_str);
+
+    let status = Command::new("ws")
+        .args(&args)
+        .status()
+        .with_context(|| format!("{} の実行に失敗しました", cmd_str))?;
+
+    if !status.success() {
+        std::process::exit(status.code().unwrap_or(1));
     }
+    Ok(())
 }
 
-fn interactive_new() -> Result<()> {
+fn interactive_new() -> Result<Vec<String>> {
     let branch_input = read_input("既存ブランチ名 (空で自動生成)")?;
-    let branch = if branch_input.is_empty() {
-        None
-    } else {
-        Some(branch_input)
-    };
-
     let dir_input = read_input("ディレクトリ (空でデフォルト)")?;
-    let directory = if dir_input.is_empty() {
-        None
-    } else {
-        Some(dir_input)
-    };
 
-    cmd_new(&NewCmd {
-        branch,
-        directory,
-    })
+    let mut args = vec!["new".to_string()];
+    if !branch_input.is_empty() {
+        args.push("-b".to_string());
+        args.push(branch_input);
+    }
+    if !dir_input.is_empty() {
+        args.push("-d".to_string());
+        args.push(dir_input);
+    }
+    Ok(args)
 }
 
-fn interactive_shared() -> Result<()> {
+fn interactive_rm() -> Result<Vec<String>> {
+    let worktree_list = git_output(&["worktree", "list"])?;
+    let lines: Vec<&str> = worktree_list.lines().skip(1).collect();
+
+    if lines.is_empty() {
+        bail!("削除可能な worktree はありません");
+    }
+
+    let selected = fzf_select(&lines, "削除する worktree を選択:")?;
+    let selected = match selected {
+        Some(s) => s,
+        None => bail!("キャンセルしました"),
+    };
+
+    let path = selected
+        .split_whitespace()
+        .next()
+        .context("worktree のパスを取得できませんでした")?
+        .to_string();
+
+    Ok(vec!["rm".to_string(), path])
+}
+
+fn interactive_shared() -> Result<Vec<String>> {
     let shared_items = &[
         "init      共有ファイル管理の初期化",
         "track     ファイルを登録",
@@ -780,49 +814,41 @@ fn interactive_shared() -> Result<()> {
     let selected = fzf_select(shared_items, "shared コマンドを選択:")?;
     let selected = match selected {
         Some(s) => s,
-        None => {
-            println!("キャンセルしました");
-            return Ok(());
-        }
+        None => bail!("キャンセルしました"),
     };
 
     let cmd = selected.split_whitespace().next().unwrap_or("");
 
     match cmd {
-        "init" => cmd_shared_init(),
+        "init" => Ok(vec!["shared".to_string(), "init".to_string()]),
         "track" => interactive_shared_track(),
-        "status" => cmd_shared_status(),
+        "status" => Ok(vec!["shared".to_string(), "status".to_string()]),
         "push" => {
             let file_input = read_input("ファイルパス (空で全 copy ファイル)")?;
-            let file = if file_input.is_empty() {
-                None
-            } else {
-                Some(file_input)
-            };
-            cmd_shared_push(&SharedPushCmd { file })
+            let mut args = vec!["shared".to_string(), "push".to_string()];
+            if !file_input.is_empty() {
+                args.push(file_input);
+            }
+            Ok(args)
         }
         "pull" => {
             let file_input = read_input("ファイルパス (空で全追跡ファイル)")?;
-            let file = if file_input.is_empty() {
-                None
-            } else {
-                Some(file_input)
-            };
-            cmd_shared_pull(&SharedPullCmd { file, force: false })
+            let mut args = vec!["shared".to_string(), "pull".to_string()];
+            if !file_input.is_empty() {
+                args.push(file_input);
+            }
+            Ok(args)
         }
         _ => bail!("不明なコマンド: {}", cmd),
     }
 }
 
-fn interactive_shared_track() -> Result<()> {
+fn interactive_shared_track() -> Result<Vec<String>> {
     let strategy_items = &["symlink", "copy"];
     let strategy = fzf_select(strategy_items, "strategy を選択:")?;
     let strategy = match strategy {
         Some(s) => s,
-        None => {
-            println!("キャンセルしました");
-            return Ok(());
-        }
+        None => bail!("キャンセルしました"),
     };
 
     let file = read_input("追跡するファイルパス")?;
@@ -830,7 +856,13 @@ fn interactive_shared_track() -> Result<()> {
         bail!("ファイルパスを入力してください");
     }
 
-    cmd_shared_track(&SharedTrackCmd { strategy, file })
+    Ok(vec![
+        "shared".to_string(),
+        "track".to_string(),
+        "-s".to_string(),
+        strategy,
+        file,
+    ])
 }
 
 // --- メイン ---
@@ -839,7 +871,9 @@ fn run(ws: Ws) -> Result<()> {
     match ws.command {
         WsCommand::New(cmd) => cmd_new(&cmd),
         WsCommand::Rm(cmd) => cmd_rm(&cmd),
+        WsCommand::List(_) => cmd_list(),
         WsCommand::Status(_) => cmd_status(),
+        WsCommand::I(_) => interactive_mode(),
         WsCommand::Shared(cmd) => match cmd.command {
             SharedCommand::Init(_) => cmd_shared_init(),
             SharedCommand::Track(c) => cmd_shared_track(&c),
@@ -851,17 +885,9 @@ fn run(ws: Ws) -> Result<()> {
 }
 
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
-    if args.iter().any(|a| a == "-i" || a == "--interactive") {
-        if let Err(e) = interactive_mode() {
-            eprintln!("エラー: {:#}", e);
-            std::process::exit(1);
-        }
-    } else {
-        let ws: Ws = argh::from_env();
-        if let Err(e) = run(ws) {
-            eprintln!("エラー: {:#}", e);
-            std::process::exit(1);
-        }
+    let ws: Ws = argh::from_env();
+    if let Err(e) = run(ws) {
+        eprintln!("エラー: {:#}", e);
+        std::process::exit(1);
     }
 }
