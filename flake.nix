@@ -108,9 +108,17 @@
             ];
           };
         };
+      pkgs = nixpkgs.legacyPackages.aarch64-darwin;
     in
     {
-      formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-tree;
+      formatter.aarch64-darwin = pkgs.nixfmt-tree;
+
+      packages.aarch64-darwin.gwt = pkgs.rustPlatform.buildRustPackage {
+        pname = "gwt";
+        version = "0.1.0";
+        src = ./packages/gwt;
+        cargoLock.lockFile = ./packages/gwt/Cargo.lock;
+      };
 
       darwinConfigurations."shinnoMacBook-Pro" = nix-darwin.lib.darwinSystem {
         modules = [

@@ -1,0 +1,8 @@
+[package]
+name = "gwt"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+argh = "0.1"
+anyhow = "1"
