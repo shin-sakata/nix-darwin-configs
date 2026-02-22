@@ -35,28 +35,6 @@ in
       "claude-md-management@claude-plugins-official" = true;
       "ralph-loop@claude-plugins-official" = true;
     };
-    hooks = {
-      Stop = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "osascript -e 'display notification \"Claude が完了しました\" with title \"Claude Code\" sound name \"Glass\"'";
-            }
-          ];
-        }
-      ];
-      Notification = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "osascript -e 'display notification \"Claude が入力を待っています\" with title \"Claude Code\" sound name \"Submarine\"'";
-            }
-          ];
-        }
-      ];
-    };
     language = "日本語";
   };
 }
