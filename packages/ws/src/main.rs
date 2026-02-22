@@ -28,13 +28,21 @@ enum WsCommand {
 #[derive(FromArgs)]
 #[argh(subcommand, name = "new")]
 struct NewCmd {
-    /// 既存ブランチをチェックアウト（省略でブランチ自動生成）
-    #[argh(option, short = 'b')]
-    branch: Option<String>,
+    /// ワークスペース名（省略で ws/<timestamp> を自動生成）
+    #[argh(positional)]
+    name: Option<String>,
 
-    /// worktree を作成するパス (default: ../<branch>)
+    /// worktree を作成するパス (default: ../<name>)
     #[argh(option, short = 'd')]
     directory: Option<String>,
+
+    /// ブランチ名 (default: name と同じ)
+    #[argh(option)]
+    branch: Option<String>,
+
+    /// 新規ブランチの起点 (default: HEAD)
+    #[argh(option)]
+    from: Option<String>,
 }
 
 /// 指定した worktree を削除する
@@ -234,14 +242,6 @@ fn apply_file(strategy: &str, filepath: &str, store: &Path, target_root: &Path) 
     Ok(())
 }
 
-fn current_date() -> Result<String> {
-    let output = Command::new("date")
-        .arg("+%Y-%m-%d")
-        .output()
-        .context("date コマンドの実行に失敗しました")?;
-    Ok(String::from_utf8(output.stdout)?.trim().to_string())
-}
-
 // --- fzf ヘルパー ---
 
 fn fzf_select(items: &[&str], prompt: &str) -> Result<Option<String>> {
@@ -278,37 +278,22 @@ fn read_input(prompt: &str) -> Result<String> {
 
 // --- コマンド: new ---
 
-fn generate_branch() -> Result<String> {
-    let user = git_output(&["config", "user.name"])?;
-    let date = current_date()?;
-    let mut n = 0u32;
-    loop {
-        let candidate = format!("{}/{}-{}", user, date, n);
-        let status = Command::new("git")
-            .args([
-                "show-ref",
-                "--verify",
-                "--quiet",
-                &format!("refs/heads/{}", candidate),
-            ])
-            .status()?;
-        if !status.success() {
-            break Ok(candidate);
-        }
-        n += 1;
-    }
+fn generate_name() -> String {
+    petname::petname(3, "-").expect("名前の生成に失敗しました")
 }
 
 fn cmd_new(cmd: &NewCmd) -> Result<()> {
-    let branch = match &cmd.branch {
-        Some(b) => b.clone(),
-        None => generate_branch()?,
+    let name = match &cmd.name {
+        Some(n) => n.clone(),
+        None => generate_name(),
     };
+
+    let branch = cmd.branch.clone().unwrap_or_else(|| name.clone());
 
     let directory = cmd
         .directory
         .clone()
-        .unwrap_or_else(|| format!("../{}", branch.replace('/', "-")));
+        .unwrap_or_else(|| format!("../{}", name));
 
     let branch_exists = Command::new("git")
         .args(["show-ref", "--verify", "--quiet", &format!("refs/heads/{}", branch)])
@@ -321,7 +306,8 @@ fn cmd_new(cmd: &NewCmd) -> Result<()> {
         vec!["worktree", "add", &directory, &branch]
     } else {
         // 新規ブランチを作成
-        vec!["worktree", "add", "-b", &branch, &directory, "HEAD"]
+        let start_point = cmd.from.as_deref().unwrap_or("HEAD");
+        vec!["worktree", "add", "-b", &branch, &directory, start_point]
     };
 
     let status = Command::new("git")
@@ -764,17 +750,34 @@ fn interactive_mode() -> Result<()> {
 }
 
 fn interactive_new() -> Result<Vec<String>> {
-    let branch_input = read_input("既存ブランチ名 (空で自動生成)")?;
-    let dir_input = read_input("ディレクトリ (空でデフォルト)")?;
+    let default_name = generate_name();
+    let name_input = read_input(&format!("名前 [default: {}]", default_name))?;
+    let name = if name_input.is_empty() {
+        default_name
+    } else {
+        name_input
+    };
 
-    let mut args = vec!["new".to_string()];
-    if !branch_input.is_empty() {
-        args.push("-b".to_string());
-        args.push(branch_input);
-    }
+    let default_dir = format!("../{}", name);
+    let dir_input = read_input(&format!("場所 [default: {}]", default_dir))?;
+
+    let default_branch = &name;
+    let branch_input = read_input(&format!("branch [default: {}]", default_branch))?;
+
+    let mut args = vec!["new".to_string(), name];
     if !dir_input.is_empty() {
         args.push("-d".to_string());
         args.push(dir_input);
+    }
+    if !branch_input.is_empty() {
+        args.push("--branch".to_string());
+        args.push(branch_input);
+    }
+
+    let from_input = read_input("起点 [default: HEAD]")?;
+    if !from_input.is_empty() {
+        args.push("--from".to_string());
+        args.push(from_input);
     }
     Ok(args)
 }
