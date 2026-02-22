@@ -38,7 +38,6 @@ in
     hooks = {
       Stop = [
         {
-          matcher = { };
           hooks = [
             {
               type = "command";
@@ -49,7 +48,6 @@ in
       ];
       Notification = [
         {
-          matcher = { };
           hooks = [
             {
               type = "command";
