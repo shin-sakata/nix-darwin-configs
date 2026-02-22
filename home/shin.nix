@@ -11,7 +11,7 @@
     ./modules/git.nix
     ./modules/direnv.nix
     ./modules/zsh.nix
-    ./modules/gwt.nix
+    ./modules/ws.nix
   ];
 
   xdg.enable = true;

@@ -5,11 +5,11 @@
 }:
 let
   system = pkgs.stdenv.hostPlatform.system;
-  gwt = inputs.self.packages.${system}.gwt;
+  ws = inputs.self.packages.${system}.ws;
 in
 {
   home.packages = [
     pkgs.fzf
-    gwt
+    ws
   ];
 }

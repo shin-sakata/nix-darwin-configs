@@ -113,11 +113,11 @@
     {
       formatter.aarch64-darwin = pkgs.nixfmt-tree;
 
-      packages.aarch64-darwin.gwt = pkgs.rustPlatform.buildRustPackage {
-        pname = "gwt";
+      packages.aarch64-darwin.ws = pkgs.rustPlatform.buildRustPackage {
+        pname = "ws";
         version = "0.1.0";
-        src = ./packages/gwt;
-        cargoLock.lockFile = ./packages/gwt/Cargo.lock;
+        src = ./packages/ws;
+        cargoLock.lockFile = ./packages/ws/Cargo.lock;
       };
 
       darwinConfigurations."shinnoMacBook-Pro" = nix-darwin.lib.darwinSystem {

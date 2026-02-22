@@ -1,45 +1,38 @@
 use anyhow::{bail, Context, Result};
 use argh::FromArgs;
 use std::fs;
-use std::io::Write;
+use std::io::{self, Write};
 use std::os::unix::fs as unix_fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-/// git worktree を管理する
+/// workspace (git worktree) を管理する
 #[derive(FromArgs)]
-struct Gwt {
+struct Ws {
     #[argh(subcommand)]
-    command: GwtCommand,
+    command: WsCommand,
 }
 
 #[derive(FromArgs)]
 #[argh(subcommand)]
-enum GwtCommand {
-    Add(AddCmd),
+enum WsCommand {
+    New(NewCmd),
     Rm(RmCmd),
-    Init(InitCmd),
-    Track(TrackCmd),
     Status(StatusCmd),
-    Push(PushCmd),
-    Pull(PullCmd),
+    Shared(SharedCmd),
 }
 
 /// worktree を作成して VSCode で開く
 #[derive(FromArgs)]
-#[argh(subcommand, name = "add")]
-struct AddCmd {
-    /// 新規ブランチ名 (default: <user>/yyyy-mm-dd-N)
+#[argh(subcommand, name = "new")]
+struct NewCmd {
+    /// 既存ブランチをチェックアウト（省略でブランチ自動生成）
     #[argh(option, short = 'b')]
     branch: Option<String>,
 
     /// worktree を作成するパス (default: ../<branch>)
     #[argh(option, short = 'd')]
     directory: Option<String>,
-
-    /// チェックアウト元の branch/commit (default: HEAD)
-    #[argh(option, short = 'f')]
-    from: Option<String>,
 }
 
 /// worktree を対話的に選択して削除する
@@ -51,15 +44,38 @@ struct RmCmd {
     force: bool,
 }
 
-/// store を初期化する（冪等）
+/// workspace 一覧と shared ファイル状態を統合表示する
+#[derive(FromArgs)]
+#[argh(subcommand, name = "status")]
+struct StatusCmd {}
+
+/// 共有ファイル管理
+#[derive(FromArgs)]
+#[argh(subcommand, name = "shared")]
+struct SharedCmd {
+    #[argh(subcommand)]
+    command: SharedCommand,
+}
+
+#[derive(FromArgs)]
+#[argh(subcommand)]
+enum SharedCommand {
+    Init(SharedInitCmd),
+    Track(SharedTrackCmd),
+    Status(SharedStatusCmd),
+    Push(SharedPushCmd),
+    Pull(SharedPullCmd),
+}
+
+/// 共有ファイル管理の初期化
 #[derive(FromArgs)]
 #[argh(subcommand, name = "init")]
-struct InitCmd {}
+struct SharedInitCmd {}
 
 /// ファイルを store に登録する
 #[derive(FromArgs)]
 #[argh(subcommand, name = "track")]
-struct TrackCmd {
+struct SharedTrackCmd {
     /// strategy (symlink or copy)
     #[argh(option, short = 's')]
     strategy: String,
@@ -69,15 +85,15 @@ struct TrackCmd {
     file: String,
 }
 
-/// 追跡ファイルの状態を表示する
+/// 共有ファイルの状態表示（詳細）
 #[derive(FromArgs)]
 #[argh(subcommand, name = "status")]
-struct StatusCmd {}
+struct SharedStatusCmd {}
 
 /// copy 追跡ファイルの変更を store に反映する
 #[derive(FromArgs)]
 #[argh(subcommand, name = "push")]
-struct PushCmd {
+struct SharedPushCmd {
     /// ファイルパス（省略で全 copy ファイル）
     #[argh(positional)]
     file: Option<String>,
@@ -86,7 +102,7 @@ struct PushCmd {
 /// store から追跡ファイルを現在の worktree に配布する
 #[derive(FromArgs)]
 #[argh(subcommand, name = "pull")]
-struct PullCmd {
+struct SharedPullCmd {
     /// ファイルパス（省略で全追跡ファイル）
     #[argh(positional)]
     file: Option<String>,
@@ -130,7 +146,7 @@ fn store_dir() -> Result<PathBuf> {
 fn require_store() -> Result<PathBuf> {
     let store = store_dir()?;
     if !store.is_dir() || !store.join("manifest").is_file() {
-        bail!("store が未初期化です。先に 'gwt init' を実行してください");
+        bail!("store が未初期化です。先に 'ws shared init' を実行してください");
     }
     Ok(store)
 }
@@ -210,47 +226,87 @@ fn current_date() -> Result<String> {
     Ok(String::from_utf8(output.stdout)?.trim().to_string())
 }
 
-// --- コマンド ---
+// --- fzf ヘルパー ---
 
-fn cmd_add(cmd: &AddCmd) -> Result<()> {
+fn fzf_select(items: &[&str], prompt: &str) -> Result<Option<String>> {
+    let input = items.join("\n");
+
+    let mut fzf = Command::new("fzf")
+        .arg(format!("--prompt={} ", prompt))
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+        .context("fzf の起動に失敗しました")?;
+
+    if let Some(stdin) = fzf.stdin.as_mut() {
+        stdin.write_all(input.as_bytes())?;
+    }
+
+    let output = fzf.wait_with_output()?;
+    let selected = String::from_utf8(output.stdout)?.trim().to_string();
+
+    if selected.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(selected))
+    }
+}
+
+fn read_input(prompt: &str) -> Result<String> {
+    eprint!("{}: ", prompt);
+    io::stderr().flush()?;
+    let mut buf = String::new();
+    io::stdin().read_line(&mut buf)?;
+    Ok(buf.trim().to_string())
+}
+
+// --- コマンド: new ---
+
+fn generate_branch() -> Result<String> {
+    let user = git_output(&["config", "user.name"])?;
+    let date = current_date()?;
+    let mut n = 0u32;
+    loop {
+        let candidate = format!("{}/{}-{}", user, date, n);
+        let status = Command::new("git")
+            .args([
+                "show-ref",
+                "--verify",
+                "--quiet",
+                &format!("refs/heads/{}", candidate),
+            ])
+            .status()?;
+        if !status.success() {
+            break Ok(candidate);
+        }
+        n += 1;
+    }
+}
+
+fn cmd_new(cmd: &NewCmd) -> Result<()> {
     let branch = match &cmd.branch {
         Some(b) => b.clone(),
-        None => {
-            let user = git_output(&["config", "user.name"])?;
-            let date = current_date()?;
-            let mut n = 0u32;
-            loop {
-                let candidate = format!("{}/{}-{}", user, date, n);
-                let status = Command::new("git")
-                    .args([
-                        "show-ref",
-                        "--verify",
-                        "--quiet",
-                        &format!("refs/heads/{}", candidate),
-                    ])
-                    .status()?;
-                if !status.success() {
-                    break candidate;
-                }
-                n += 1;
-            }
-        }
+        None => generate_branch()?,
     };
 
-    let directory = cmd.directory.clone().unwrap_or_else(|| {
-        let dir_name = branch.replace('/', "-");
-        format!("../{}", dir_name)
-    });
+    let directory = cmd
+        .directory
+        .clone()
+        .unwrap_or_else(|| format!("../{}", branch.replace('/', "-")));
 
-    let mut args = vec!["worktree", "add", "-b"];
-    args.push(&branch);
-    args.push(&directory);
+    let branch_exists = Command::new("git")
+        .args(["show-ref", "--verify", "--quiet", &format!("refs/heads/{}", branch)])
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false);
 
-    let from_ref;
-    if let Some(from) = &cmd.from {
-        from_ref = from.clone();
-        args.push(&from_ref);
-    }
+    let args = if branch_exists {
+        // 既存ブランチをチェックアウト
+        vec!["worktree", "add", &directory, &branch]
+    } else {
+        // 新規ブランチを作成
+        vec!["worktree", "add", "-b", &branch, &directory, "HEAD"]
+    };
 
     let status = Command::new("git")
         .args(&args)
@@ -282,6 +338,8 @@ fn cmd_add(cmd: &AddCmd) -> Result<()> {
     Ok(())
 }
 
+// --- コマンド: rm ---
+
 fn cmd_rm(cmd: &RmCmd) -> Result<()> {
     let worktree_list = git_output(&["worktree", "list"])?;
     let lines: Vec<&str> = worktree_list.lines().skip(1).collect();
@@ -291,26 +349,15 @@ fn cmd_rm(cmd: &RmCmd) -> Result<()> {
         return Ok(());
     }
 
-    let input = lines.join("\n");
+    let selected = fzf_select(&lines, "削除する worktree を選択:")?;
 
-    let mut fzf = Command::new("fzf")
-        .arg("--prompt=削除する worktree を選択: ")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()
-        .context("fzf の起動に失敗しました")?;
-
-    if let Some(stdin) = fzf.stdin.as_mut() {
-        stdin.write_all(input.as_bytes())?;
-    }
-
-    let output = fzf.wait_with_output()?;
-    let selected = String::from_utf8(output.stdout)?.trim().to_string();
-
-    if selected.is_empty() {
-        println!("キャンセルしました");
-        return Ok(());
-    }
+    let selected = match selected {
+        Some(s) => s,
+        None => {
+            println!("キャンセルしました");
+            return Ok(());
+        }
+    };
 
     let path = selected
         .split_whitespace()
@@ -335,7 +382,135 @@ fn cmd_rm(cmd: &RmCmd) -> Result<()> {
     Ok(())
 }
 
-fn cmd_init() -> Result<()> {
+// --- コマンド: status (統合) ---
+
+fn cmd_status() -> Result<()> {
+    let worktree_list = git_output(&["worktree", "list"])?;
+    println!("Workspaces:");
+
+    let main_wt_root = worktree_root().ok();
+    let store_available = store_dir()
+        .ok()
+        .filter(|s| s.is_dir() && s.join("manifest").is_file());
+
+    for line in worktree_list.lines() {
+        let parts: Vec<&str> = line.split_whitespace().collect();
+        if parts.len() < 3 {
+            continue;
+        }
+        let wt_path = parts[0];
+        let branch_info = parts[2..].join(" ");
+
+        let is_main = main_wt_root
+            .as_ref()
+            .map(|r| r.to_str() == Some(wt_path))
+            .unwrap_or(false);
+
+        let marker = if is_main { "*" } else { " " };
+
+        let tracked_info = if let Some(ref store) = store_available {
+            let entries = read_manifest(store).unwrap_or_default();
+            if !entries.is_empty() {
+                format!("  [{} files tracked]", entries.len())
+            } else {
+                String::new()
+            }
+        } else {
+            String::new()
+        };
+
+        println!(
+            "  {} {:<40} {}{}",
+            marker, wt_path, branch_info, tracked_info
+        );
+    }
+
+    // Shared files セクション
+    if let Some(store) = store_available {
+        let entries = read_manifest(&store)?;
+        if !entries.is_empty() {
+            println!();
+            println!("Shared files:");
+            println!(
+                "  {:<8} {:<40} {}",
+                "STRATEGY", "FILE", "STATUS"
+            );
+            println!(
+                "  {:<8} {:<40} {}",
+                "--------", "----------------------------------------", "----------"
+            );
+
+            let wt_root = worktree_root().ok();
+
+            for entry in &entries {
+                let store_file = store.join(&entry.filepath);
+                let status = file_status(entry, &store_file, &wt_root);
+                println!(
+                    "  {:<8} {:<40} {}",
+                    entry.strategy, entry.filepath, status
+                );
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn file_status(
+    entry: &ManifestEntry,
+    store_file: &Path,
+    wt_root: &Option<PathBuf>,
+) -> &'static str {
+    if !store_file.is_file() {
+        return "MISSING(store)";
+    }
+
+    let Some(ref root) = wt_root else {
+        return "(store のみ)";
+    };
+
+    let wt_file = root.join(&entry.filepath);
+    let wt_exists = wt_file.exists() || wt_file.symlink_metadata().is_ok();
+
+    if !wt_exists {
+        return "MISSING";
+    }
+
+    if entry.strategy == "symlink" {
+        let is_link = wt_file
+            .symlink_metadata()
+            .map(|m| m.file_type().is_symlink())
+            .unwrap_or(false);
+
+        if !is_link {
+            return "NOT_LINK";
+        }
+
+        let link_target = match fs::read_link(&wt_file) {
+            Ok(t) => t,
+            Err(_) => return "ERROR",
+        };
+        if link_target != *store_file {
+            "WRONG_LINK"
+        } else {
+            "OK"
+        }
+    } else if entry.strategy == "copy" {
+        let store_content = fs::read(store_file).ok();
+        let wt_content = fs::read(&wt_file).ok();
+        if store_content != wt_content {
+            "MODIFIED"
+        } else {
+            "OK"
+        }
+    } else {
+        "OK"
+    }
+}
+
+// --- コマンド: shared ---
+
+fn cmd_shared_init() -> Result<()> {
     let store = store_dir()?;
 
     fs::create_dir_all(&store)?;
@@ -351,7 +526,7 @@ fn cmd_init() -> Result<()> {
     Ok(())
 }
 
-fn cmd_track(cmd: &TrackCmd) -> Result<()> {
+fn cmd_shared_track(cmd: &SharedTrackCmd) -> Result<()> {
     let store = require_store()?;
     let wt_root = worktree_root()?;
 
@@ -394,17 +569,14 @@ fn cmd_track(cmd: &TrackCmd) -> Result<()> {
         .unwrap_or(false);
 
     if cmd.strategy == "symlink" {
-        // store にコンテンツをコピー
         fs::copy(&source, &store_file).context("store へのコピーに失敗しました")?;
 
-        // 通常ファイルならシンボリックリンクに変換
         if !is_symlink {
             fs::remove_file(&source)?;
             unix_fs::symlink(&store_file, &source)?;
             println!("{} をシンボリックリンクに変換しました", cmd.file);
         }
     } else {
-        // copy strategy
         fs::copy(&source, &store_file).context("store へのコピーに失敗しました")?;
     }
 
@@ -412,7 +584,7 @@ fn cmd_track(cmd: &TrackCmd) -> Result<()> {
     Ok(())
 }
 
-fn cmd_status() -> Result<()> {
+fn cmd_shared_status() -> Result<()> {
     let store = require_store()?;
     let wt_root = worktree_root().ok();
 
@@ -433,59 +605,14 @@ fn cmd_status() -> Result<()> {
 
     for entry in &entries {
         let store_file = store.join(&entry.filepath);
-
-        if !store_file.is_file() {
-            println!(
-                "{:<8} {:<40} {}",
-                entry.strategy, entry.filepath, "MISSING(store)"
-            );
-            continue;
-        }
-
-        let status = if let Some(ref root) = wt_root {
-            let wt_file = root.join(&entry.filepath);
-            let wt_exists = wt_file.exists() || wt_file.symlink_metadata().is_ok();
-
-            if !wt_exists {
-                "MISSING"
-            } else if entry.strategy == "symlink" {
-                let is_link = wt_file
-                    .symlink_metadata()
-                    .map(|m| m.file_type().is_symlink())
-                    .unwrap_or(false);
-
-                if is_link {
-                    let link_target = fs::read_link(&wt_file)?;
-                    if link_target != store_file {
-                        "WRONG_LINK"
-                    } else {
-                        "OK"
-                    }
-                } else {
-                    "NOT_LINK"
-                }
-            } else if entry.strategy == "copy" {
-                let store_content = fs::read(&store_file).ok();
-                let wt_content = fs::read(&wt_file).ok();
-                if store_content != wt_content {
-                    "MODIFIED"
-                } else {
-                    "OK"
-                }
-            } else {
-                "OK"
-            }
-        } else {
-            "(store のみ)"
-        };
-
+        let status = file_status(entry, &store_file, &wt_root);
         println!("{:<8} {:<40} {}", entry.strategy, entry.filepath, status);
     }
 
     Ok(())
 }
 
-fn cmd_push(cmd: &PushCmd) -> Result<()> {
+fn cmd_shared_push(cmd: &SharedPushCmd) -> Result<()> {
     let store = require_store()?;
     let wt_root = worktree_root()?;
     let entries = read_manifest(&store)?;
@@ -526,7 +653,7 @@ fn cmd_push(cmd: &PushCmd) -> Result<()> {
     Ok(())
 }
 
-fn cmd_pull(cmd: &PullCmd) -> Result<()> {
+fn cmd_shared_pull(cmd: &SharedPullCmd) -> Result<()> {
     let store = require_store()?;
     let wt_root = worktree_root()?;
     let entries = read_manifest(&store)?;
@@ -557,7 +684,6 @@ fn cmd_pull(cmd: &PullCmd) -> Result<()> {
             continue;
         }
 
-        // 既存ファイル/リンクを削除してから配布
         if wt_exists {
             let _ = fs::remove_file(&wt_file);
         }
@@ -591,22 +717,151 @@ fn cmd_pull(cmd: &PullCmd) -> Result<()> {
     Ok(())
 }
 
-fn run(gwt: Gwt) -> Result<()> {
-    match gwt.command {
-        GwtCommand::Add(cmd) => cmd_add(&cmd),
-        GwtCommand::Rm(cmd) => cmd_rm(&cmd),
-        GwtCommand::Init(_) => cmd_init(),
-        GwtCommand::Track(cmd) => cmd_track(&cmd),
-        GwtCommand::Status(_) => cmd_status(),
-        GwtCommand::Push(cmd) => cmd_push(&cmd),
-        GwtCommand::Pull(cmd) => cmd_pull(&cmd),
+// --- インタラクティブモード ---
+
+fn interactive_mode() -> Result<()> {
+    let top_items = &[
+        "new       workspace を作成",
+        "rm        workspace を削除",
+        "status    全体の状態表示",
+        "shared    共有ファイル管理",
+    ];
+
+    let selected = fzf_select(top_items, "コマンドを選択:")?;
+    let selected = match selected {
+        Some(s) => s,
+        None => {
+            println!("キャンセルしました");
+            return Ok(());
+        }
+    };
+
+    let cmd = selected.split_whitespace().next().unwrap_or("");
+
+    match cmd {
+        "new" => interactive_new(),
+        "rm" => cmd_rm(&RmCmd { force: false }),
+        "status" => cmd_status(),
+        "shared" => interactive_shared(),
+        _ => bail!("不明なコマンド: {}", cmd),
+    }
+}
+
+fn interactive_new() -> Result<()> {
+    let branch_input = read_input("既存ブランチ名 (空で自動生成)")?;
+    let branch = if branch_input.is_empty() {
+        None
+    } else {
+        Some(branch_input)
+    };
+
+    let dir_input = read_input("ディレクトリ (空でデフォルト)")?;
+    let directory = if dir_input.is_empty() {
+        None
+    } else {
+        Some(dir_input)
+    };
+
+    cmd_new(&NewCmd {
+        branch,
+        directory,
+    })
+}
+
+fn interactive_shared() -> Result<()> {
+    let shared_items = &[
+        "init      共有ファイル管理の初期化",
+        "track     ファイルを登録",
+        "status    共有ファイルの状態表示",
+        "push      workspace → shared",
+        "pull      shared → workspace",
+    ];
+
+    let selected = fzf_select(shared_items, "shared コマンドを選択:")?;
+    let selected = match selected {
+        Some(s) => s,
+        None => {
+            println!("キャンセルしました");
+            return Ok(());
+        }
+    };
+
+    let cmd = selected.split_whitespace().next().unwrap_or("");
+
+    match cmd {
+        "init" => cmd_shared_init(),
+        "track" => interactive_shared_track(),
+        "status" => cmd_shared_status(),
+        "push" => {
+            let file_input = read_input("ファイルパス (空で全 copy ファイル)")?;
+            let file = if file_input.is_empty() {
+                None
+            } else {
+                Some(file_input)
+            };
+            cmd_shared_push(&SharedPushCmd { file })
+        }
+        "pull" => {
+            let file_input = read_input("ファイルパス (空で全追跡ファイル)")?;
+            let file = if file_input.is_empty() {
+                None
+            } else {
+                Some(file_input)
+            };
+            cmd_shared_pull(&SharedPullCmd { file, force: false })
+        }
+        _ => bail!("不明なコマンド: {}", cmd),
+    }
+}
+
+fn interactive_shared_track() -> Result<()> {
+    let strategy_items = &["symlink", "copy"];
+    let strategy = fzf_select(strategy_items, "strategy を選択:")?;
+    let strategy = match strategy {
+        Some(s) => s,
+        None => {
+            println!("キャンセルしました");
+            return Ok(());
+        }
+    };
+
+    let file = read_input("追跡するファイルパス")?;
+    if file.is_empty() {
+        bail!("ファイルパスを入力してください");
+    }
+
+    cmd_shared_track(&SharedTrackCmd { strategy, file })
+}
+
+// --- メイン ---
+
+fn run(ws: Ws) -> Result<()> {
+    match ws.command {
+        WsCommand::New(cmd) => cmd_new(&cmd),
+        WsCommand::Rm(cmd) => cmd_rm(&cmd),
+        WsCommand::Status(_) => cmd_status(),
+        WsCommand::Shared(cmd) => match cmd.command {
+            SharedCommand::Init(_) => cmd_shared_init(),
+            SharedCommand::Track(c) => cmd_shared_track(&c),
+            SharedCommand::Status(_) => cmd_shared_status(),
+            SharedCommand::Push(c) => cmd_shared_push(&c),
+            SharedCommand::Pull(c) => cmd_shared_pull(&c),
+        },
     }
 }
 
 fn main() {
-    let gwt: Gwt = argh::from_env();
-    if let Err(e) = run(gwt) {
-        eprintln!("エラー: {:#}", e);
-        std::process::exit(1);
+    let args: Vec<String> = std::env::args().collect();
+    if args.iter().any(|a| a == "-i" || a == "--interactive") {
+        if let Err(e) = interactive_mode() {
+            eprintln!("エラー: {:#}", e);
+            std::process::exit(1);
+        }
+    } else {
+        let ws: Ws = argh::from_env();
+        if let Err(e) = run(ws) {
+            eprintln!("エラー: {:#}", e);
+            std::process::exit(1);
+        }
     }
 }
