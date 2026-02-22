@@ -81,6 +81,10 @@
           system.stateVersion = 6;
           nixpkgs.hostPlatform = "aarch64-darwin";
 
+          # メニューバー設定
+          system.defaults.NSGlobalDomain._HIHideMenuBar = false;
+          system.defaults.CustomUserPreferences."NSGlobalDomain".AppleMenuBarVisibleInFullscreen = true;
+
           homebrew = {
             enable = true;
             onActivation = {
