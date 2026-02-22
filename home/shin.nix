@@ -11,6 +11,7 @@
     ./modules/git.nix
     ./modules/direnv.nix
     ./modules/zsh.nix
+    ./modules/gwt.nix
   ];
 
   xdg.enable = true;
@@ -23,6 +24,5 @@
     pkgs.tree
     pkgs.gh
     pkgs.ripgrep
-    pkgs.tmux
   ];
 }

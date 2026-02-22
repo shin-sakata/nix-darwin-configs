@@ -25,6 +25,12 @@
       zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
       PROMPT='%n@%m:%1~ %# '
+
+      # brew の直接利用を禁止（nix-darwin の宣言的管理を強制）
+      brew() {
+        echo "brew を直接使わないでください。flake.nix を編集して darwin-rebuild switch を実行してください。"
+        return 1
+      }
     '';
   };
 }
