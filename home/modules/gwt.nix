@@ -67,11 +67,11 @@
       # @cmd worktree を作成して VSCode で開く
       # @option -d --directory  worktree を作成するパス (default: ../<branch>)
       # @option -b --branch     新規ブランチ名 (default: <user>/yyyy-mm-dd-N)
-      # @option -w --base       チェックアウト元の branch/commit (default: HEAD)
+      # @option -f --from       チェックアウト元の branch/commit (default: HEAD)
       add() {
         local branch="''${argc_branch}"
         local directory="''${argc_directory}"
-        local base="''${argc_base}"
+        local base="''${argc_from}"
 
         # branch のデフォルト: <git-user>/yyyy-mm-dd-N (0, 1, 2, ...)
         if [[ -z "$branch" ]]; then
