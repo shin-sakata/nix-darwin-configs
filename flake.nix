@@ -22,6 +22,10 @@
       url = "github:numtide/llm-agents.nix";
     };
 
+    ws-cli = {
+      url = "github:langify-org/ws-cli";
+    };
+
   };
 
   outputs =
@@ -112,13 +116,6 @@
     in
     {
       formatter.aarch64-darwin = pkgs.nixfmt-tree;
-
-      packages.aarch64-darwin.ws = pkgs.rustPlatform.buildRustPackage {
-        pname = "ws";
-        version = "0.1.0";
-        src = ./packages/ws;
-        cargoLock.lockFile = ./packages/ws/Cargo.lock;
-      };
 
       darwinConfigurations."shinnoMacBook-Pro" = nix-darwin.lib.darwinSystem {
         modules = [

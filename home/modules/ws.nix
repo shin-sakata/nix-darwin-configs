@@ -5,11 +5,10 @@
 }:
 let
   system = pkgs.stdenv.hostPlatform.system;
-  ws = inputs.self.packages.${system}.ws;
+  ws = inputs.ws-cli.packages.${system}.ws;
 in
 {
   home.packages = [
-    pkgs.fzf
     ws
   ];
 }
