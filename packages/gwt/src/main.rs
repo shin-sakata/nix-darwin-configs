@@ -237,10 +237,10 @@ fn cmd_add(cmd: &AddCmd) -> Result<()> {
         }
     };
 
-    let directory = cmd
-        .directory
-        .clone()
-        .unwrap_or_else(|| format!("../{}", branch));
+    let directory = cmd.directory.clone().unwrap_or_else(|| {
+        let dir_name = branch.replace('/', "-");
+        format!("../{}", dir_name)
+    });
 
     let mut args = vec!["worktree", "add", "-b"];
     args.push(&branch);
