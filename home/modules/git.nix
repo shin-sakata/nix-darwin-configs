@@ -2,14 +2,6 @@
 {
   programs.git = {
     enable = true;
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        side-by-side = true;
-        dark = true;
-      };
-    };
     settings = {
       core.editor = "code --wait";
       user = {
@@ -22,5 +14,15 @@
       ".direnv"
       "*.local.*"
     ];
+  };
+
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      side-by-side = true;
+      dark = true;
+    };
   };
 }
