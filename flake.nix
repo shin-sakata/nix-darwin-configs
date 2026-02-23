@@ -107,9 +107,9 @@
               "google-chrome"
               "slack"
               "ghostty"
-              "tailscale"
+              "tailscale-app"
               "claude"
-              "docker"
+              "docker-desktop"
               "discord"
               "chatbox"
               "codex-app"
@@ -137,6 +137,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.shin = import ./home/shin.nix;
           }

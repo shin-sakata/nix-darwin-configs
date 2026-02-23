@@ -267,11 +267,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1771828645,
-        "narHash": "sha256-ML0ahEKVjR/o7hkH/HoaEBc/YJkG3yLdVVzUKVe858E=",
+        "lastModified": 1771833200,
+        "narHash": "sha256-0LkIWaFlsjtmK7DNPtZiAXvaHRPoAYtdKDL9djqZbyc=",
         "owner": "langify-org",
         "repo": "ws-cli",
-        "rev": "88885275b19d76e5210391dfef2c37cdd62783a6",
+        "rev": "5b33080d3f3d2c46e9a518d23a0a6cdffc6e670f",
         "type": "github"
       },
       "original": {
