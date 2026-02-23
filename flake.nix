@@ -70,9 +70,13 @@
               "root"
               "shin"
             ];
-            extra-substituters = [ "https://cache.numtide.com" ];
+            extra-substituters = [
+              "https://cache.numtide.com"
+              "https://langify-org.cachix.org"
+            ];
             extra-trusted-public-keys = [
               "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+              "langify-org.cachix.org-1:zO6Hf3s6e3Ex7PDSazL1A7XwR/3Deui7G3LUrs4+nq4="
             ];
           };
           nixpkgs.config.allowUnfree = true;
