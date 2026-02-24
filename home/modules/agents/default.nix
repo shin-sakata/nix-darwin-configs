@@ -14,6 +14,7 @@ in
   home.file.".claude/commands/ralph-setup.md".source = ./commands/ralph-setup.md;
   home.file.".claude/commands/ralph-pre-setup.md".source = ./commands/ralph-pre-setup.md;
   home.file.".claude/commands/ralph-pr.md".source = ./commands/ralph-pr.md;
+  home.file.".claude/skills/ws/SKILL.md".source = ./skills/ws/SKILL.md;
 
   # Claude Code のグローバル設定
   home.file.".claude/settings.json".text = builtins.toJSON {

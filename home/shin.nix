@@ -17,6 +17,10 @@
   xdg.enable = true;
   home.stateVersion = "26.05";
 
+  home.sessionVariables = {
+    EDITOR = "code";
+  };
+
   home.packages = [
     pkgs._1password-cli
     pkgs.nodejs-slim_24

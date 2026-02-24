@@ -34,6 +34,9 @@ in
         path = "~/Projects/shin-sakata/shin-sakata";
         url = "git@github.com:shin-sakata/shin-sakata.git";
       };
+      define = {
+        path = "~/Projects/shin-sakata/define";
+      };
       web = {
         path = "~/Projects/spirinc/web";
         url = "git@github.com:spirinc/web.git";
