@@ -17,25 +17,5 @@ in
   home.file.".claude/skills/ws/SKILL.md".source = ./skills/ws/SKILL.md;
 
   # Claude Code のグローバル設定
-  home.file.".claude/settings.json".text = builtins.toJSON {
-    env = {
-      CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
-    };
-    permissions = {
-      allow = [
-        "Bash"
-        "WebFetch"
-        "WebSearch"
-        "mcp__ide__getDiagnostics"
-      ];
-      additionalDirectories = [
-        "/Users/shin/Projects/shin-sakata"
-      ];
-    };
-    enabledPlugins = {
-      "claude-md-management@claude-plugins-official" = true;
-      "ralph-loop@claude-plugins-official" = true;
-    };
-    language = "日本語";
-  };
+  # settings.json は Claude Code / Cowork が動的に書き換えるため home-manager 管理外とする
 }

@@ -100,6 +100,10 @@
               cleanup = "zap";
             };
 
+            masApps = {
+              "DaVinci Resolve" = 571213070;
+            };
+
             casks = [
               "visual-studio-code"
               "cursor"
@@ -113,6 +117,7 @@
               "discord"
               "chatbox"
               "codex-app"
+              "bitwarden"
             ];
           };
         };

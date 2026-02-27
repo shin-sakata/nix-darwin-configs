@@ -12,6 +12,7 @@
     ./modules/direnv.nix
     ./modules/zsh.nix
     ./modules/ws.nix
+    ./modules/tmux.nix
   ];
 
   xdg.enable = true;
@@ -23,10 +24,12 @@
 
   home.packages = [
     pkgs._1password-cli
+    pkgs.bitwarden-cli
     pkgs.nodejs-slim_24
     pkgs.nodejs-slim_24.pkgs.pnpm
     pkgs.tree
     pkgs.gh
     pkgs.ripgrep
+    pkgs.mosh
   ];
 }
