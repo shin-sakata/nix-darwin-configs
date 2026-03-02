@@ -1,0 +1,27 @@
+[
+    // エディタグループが1つだけ: 右の新グループにターミナルを作成
+    {
+        "key": "cmd+n",
+        "command": "workbench.action.createTerminalEditorSide",
+        "when": "!multipleEditorGroups"
+    },
+    // 複数グループあり: ターミナルを作成し、最後のエディタグループに移動
+    {
+        "key": "cmd+n",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "workbench.action.createTerminalEditor",
+                "workbench.action.moveEditorToLastGroup"
+            ]
+        },
+        "when": "multipleEditorGroups"
+    },
+    // ターミナルで Shift+Enter を Shift+Enter として送信（kitty keyboard protocol の Shift+Enter シーケンス）
+    {
+        "key": "shift+enter",
+        "command": "workbench.action.terminal.sendSequence",
+        "args": { "text": "\u001b[13;2u" },
+        "when": "terminalFocus"
+    }
+]

@@ -14,6 +14,7 @@
     ./modules/ws.nix
     ./modules/tmux.nix
     ./modules/neovim.nix
+    ./modules/vscode.nix
   ];
 
   xdg.enable = true;

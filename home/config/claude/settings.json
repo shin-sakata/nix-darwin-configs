@@ -1,0 +1,35 @@
+{
+  "enabledPlugins": {
+    "claude-md-management@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/shin/.claude/hooks/moshi-notify.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "language": "日本語",
+  "permissions": {
+    "additionalDirectories": [
+      "/Users/shin/Projects/shin-sakata"
+    ],
+    "allow": [
+      "Bash",
+      "WebFetch",
+      "WebSearch",
+      "mcp__ide__getDiagnostics"
+    ]
+  },
+  "teammateMode": "tmux"
+}
