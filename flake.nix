@@ -53,13 +53,16 @@
             shin ALL=(ALL) NOPASSWD: ALL
           '';
 
-          # 電源管理設定: 電源接続時はディスプレイのみスリープ、システムは起動したまま
+          # 電源管理設定: 常にシステムは起動したまま、ディスプレイのみスリープ
           system.activationScripts.postActivation.text = ''
-            # 電源接続時 (-c): ディスプレイは10分でスリープ、システムはスリープしない
-            /usr/bin/pmset -c displaysleep 10 sleep 0 disksleep 0
+            # まずデフォルトに戻してから設定を適用（宣言的に管理するため）
+            /usr/bin/pmset restoredefaults
 
-            # バッテリー駆動時 (-b): 通常通りスリープ
-            /usr/bin/pmset -b displaysleep 5 sleep 15
+            # 電源接続時 (-c): ディスプレイは10分でスリープ、システム・蓋閉じスリープ無効
+            /usr/bin/pmset -c displaysleep 10 sleep 0 disksleep 0 disablesleep 1
+
+            # バッテリー駆動時 (-b): ディスプレイは1分でオフ、システム・蓋閉じスリープ無効
+            /usr/bin/pmset -b displaysleep 1 sleep 0 disablesleep 1
 
             echo "電源管理設定を適用しました"
           '';
@@ -143,7 +146,10 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = {
+              inherit inputs;
+              flakeRelPath = "Projects/shin-sakata/nix-darwin";
+            };
             home-manager.users.shin = import ./home/shin.nix;
           }
         ];

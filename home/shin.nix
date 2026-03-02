@@ -13,6 +13,7 @@
     ./modules/zsh.nix
     ./modules/ws.nix
     ./modules/tmux.nix
+    ./modules/neovim.nix
   ];
 
   xdg.enable = true;
@@ -20,6 +21,7 @@
 
   home.sessionVariables = {
     EDITOR = "code";
+    MOSH_SERVER_NETWORK_TMOUT = "86400";
   };
 
   home.packages = [
