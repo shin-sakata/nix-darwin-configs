@@ -6,6 +6,11 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
+    shellAliases = {
+      # disablesleep 有効時の手動スリープ用
+      "sleep-now" = "sudo pmset sleepnow";
+    };
+
     history = {
       size = 100000;
       save = 100000;
