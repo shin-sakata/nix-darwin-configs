@@ -121,6 +121,7 @@
               "chatbox"
               "codex-app"
               "bitwarden"
+              "lm-studio"
             ];
           };
         };

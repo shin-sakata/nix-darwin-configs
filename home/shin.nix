@@ -34,5 +34,6 @@
     pkgs.gh
     pkgs.ripgrep
     pkgs.mosh
+    pkgs.ollama
   ];
 }
