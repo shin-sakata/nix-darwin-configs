@@ -53,17 +53,10 @@
             shin ALL=(ALL) NOPASSWD: ALL
           '';
 
-          # 電源管理設定: 蓋閉じ・自動スリープ無効、手動スリープは `pmset sleepnow` で代用
+          # 電源管理設定: 自動スリープ無効、手動スリープ・蓋閉じスリープは有効
           system.activationScripts.postActivation.text = ''
             # まずデフォルトに戻してから設定を適用（宣言的に管理するため）
             /usr/bin/pmset restoredefaults
-
-            # 電源接続時 (-c): ディスプレイは10分でスリープ、システムスリープ完全無効（蓋閉じ含む）
-            /usr/bin/pmset -c displaysleep 10 sleep 0 disksleep 0 disablesleep 1
-
-            # バッテリー駆動時 (-b): ディスプレイは1分でオフ、システムスリープ完全無効（蓋閉じ含む）
-            /usr/bin/pmset -b displaysleep 1 sleep 0 disablesleep 1
-
             echo "電源管理設定を適用しました"
           '';
 
