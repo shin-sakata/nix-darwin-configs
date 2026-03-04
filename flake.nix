@@ -53,7 +53,6 @@
             shin ALL=(ALL) NOPASSWD: ALL
           '';
 
-          # 電源管理設定: 自動スリープ無効、手動スリープ・蓋閉じスリープは有効
           system.activationScripts.postActivation.text = ''
             # まずデフォルトに戻してから設定を適用（宣言的に管理するため）
             /usr/bin/pmset restoredefaults
