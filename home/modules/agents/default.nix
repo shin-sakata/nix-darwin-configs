@@ -14,6 +14,7 @@ in
   home.packages = [
     agents.claude-code
     agents.codex
+    agents.opencode
   ];
 
   # Claude Code 用のシンボリックリンク
@@ -28,4 +29,10 @@ in
     config.lib.file.mkOutOfStoreSymlink "${flakePath}/home/modules/agents/CLAUDE.md";
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${flakePath}/home/config/claude/settings.json";
+
+  # OpenCode のグローバル設定
+  xdg.configFile."opencode/opencode.jsonc".source =
+    config.lib.file.mkOutOfStoreSymlink "${flakePath}/home/config/opencode/opencode.jsonc";
+  xdg.configFile."opencode/tui.jsonc".source =
+    config.lib.file.mkOutOfStoreSymlink "${flakePath}/home/config/opencode/tui.jsonc";
 }

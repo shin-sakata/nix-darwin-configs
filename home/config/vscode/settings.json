@@ -58,5 +58,11 @@
         "terminal.ansiBrightWhite": "#eaeaea"
     },
     "git.openRepositoryInParentFolders": "never",
-    "git.confirmSync": false
+    "git.confirmSync": false,
+
+    // JSON Schema: 外部ドメインの信頼設定
+    "json.schemaDownload.trustedDomains": {
+        "https://opencode.ai/": true,
+        "https://models.dev/": true
+    }
 }
