@@ -57,7 +57,7 @@
         "terminal.ansiBrightCyan": "#83beb1",
         "terminal.ansiBrightWhite": "#eaeaea"
     },
-    "remote.autoForwardPortsSource": "process",
+    "remote.autoForwardPorts": false,
     "git.openRepositoryInParentFolders": "never",
     "git.confirmSync": false,
 
