@@ -1,10 +1,17 @@
 {
-  "enabledPlugins": {
-    "claude-md-management@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true
-  },
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash",
+      "WebFetch",
+      "WebSearch",
+      "mcp__ide__getDiagnostics"
+    ],
+    "additionalDirectories": [
+      "/Users/shin/Projects/shin-sakata"
+    ]
   },
   "hooks": {
     "Stop": [
@@ -19,17 +26,11 @@
       }
     ]
   },
-  "language": "日本語",
-  "permissions": {
-    "additionalDirectories": [
-      "/Users/shin/Projects/shin-sakata"
-    ],
-    "allow": [
-      "Bash",
-      "WebFetch",
-      "WebSearch",
-      "mcp__ide__getDiagnostics"
-    ]
+  "enabledPlugins": {
+    "claude-md-management@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true
   },
-  "teammateMode": "tmux"
+  "language": "日本語",
+  "teammateMode": "tmux",
+  "effortLevel": "high"
 }

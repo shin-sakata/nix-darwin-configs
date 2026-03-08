@@ -13,6 +13,7 @@
     ignores = [
       ".direnv"
       "*.local.*"
+      ".claude/skills/_*/SKILL.md"
     ];
   };
 

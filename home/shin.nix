@@ -35,5 +35,6 @@
     pkgs.ripgrep
     pkgs.mosh
     pkgs.ollama
+    pkgs.marp-cli
   ];
 }
