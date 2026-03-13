@@ -31,6 +31,5 @@
     "ralph-loop@claude-plugins-official": true
   },
   "language": "日本語",
-  "teammateMode": "tmux",
-  "effortLevel": "high"
+  "teammateMode": "tmux"
 }
