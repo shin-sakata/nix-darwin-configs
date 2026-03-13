@@ -114,6 +114,7 @@
               "codex-app"
               "bitwarden"
               "lm-studio"
+              "melonds"
             ];
           };
         };
