@@ -35,5 +35,6 @@
     pkgs.mosh
     pkgs.ollama
     pkgs.marp-cli
+    pkgs.infisical
   ];
 }
