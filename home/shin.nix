@@ -23,6 +23,7 @@
   home.sessionVariables = {
     EDITOR = "code";
     MOSH_SERVER_NETWORK_TMOUT = "86400";
+    BITWARDEN_CLI_USE_DESKTOP_INTEGRATION = "true";
   };
 
   home.packages = [
