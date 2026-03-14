@@ -28,7 +28,7 @@
 ## 開発環境
 - エディタ: VSCode
 - シェル: Zsh
-- バージョン管理: Git + 1Password SSH Agent
+- バージョン管理: Git + Bitwarden SSH Agent
 - パッケージマネージャー: Nix, pnpm
 
 ## 並行開発
@@ -37,6 +37,6 @@
 - 作業完了後は不要な worktree を削除せよ
 
 ## セキュリティ
-- SSH キーは 1Password で管理
-- Git の署名も 1Password 経由
+- SSH キーは Bitwarden で管理
+- Git の署名も Bitwarden 経由
 - 機密情報はコードに含めない
