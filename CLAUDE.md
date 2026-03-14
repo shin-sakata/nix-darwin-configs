@@ -58,11 +58,11 @@ sudo -H nix store optimise
 - フォーマッタは `nixfmt-tree`（`nix fmt .` で実行）
 - `darwin-rebuild switch` はシステムに変更を加えるため、必ず変更内容を説明しユーザーの確認を得てから実行する
 - 破壊的な変更を行う前にユーザーの確認を取れ
-- SSH キーと Git 署名は Bitwarden 経由で管理されている。機密情報をコードに含めないこと
+- SSH キーと Git 署名は 1Password 経由で管理されている。機密情報をコードに含めないこと
 - 新しいモジュールを追加した場合は `home/shin.nix` の `imports` に追加が必要
 - TouchID による sudo 認証は無効化されている（iPhone からのリモートアクセス用途のため）
 
 ## nix-darwin における例外
 
 - casks は完全にバージョンをコード管理できない。インストールの要否のみ管理する
-- Bitwarden の GUI と SSH Agent の連携は GUI から手動設定が必要
+- 1Password の GUI と CLI/SSH Agent の連携は GUI から手動設定が必要

@@ -25,7 +25,7 @@ darwin における GUI アプリケーションはこのレベルで管理す�
 ### home-manager
 
 dotfiles や ユーザーレベルの cli パッケージ等の管理をしている。
-エディタの設定、bitwarden の設定、git の設定などなど。
+エディタの設定、1password の設定、git の設定などなど。
 
 ## install
 
@@ -46,7 +46,7 @@ $ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
 
 ## GUI アプリケーションの個別具体設定
 
-- bitwarden の gui と ssh エージェントの連携や設定を GUI で行う必要あり
+- 1password の gui と cli や ssh エージェントの連携や設定を GUI で行う必要あり
 
 ## その後の使い方
 

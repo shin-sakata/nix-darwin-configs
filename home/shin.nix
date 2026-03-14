@@ -23,11 +23,10 @@
   home.sessionVariables = {
     EDITOR = "code";
     MOSH_SERVER_NETWORK_TMOUT = "86400";
-    BITWARDEN_CLI_USE_DESKTOP_INTEGRATION = "true";
   };
 
   home.packages = [
-    pkgs.bitwarden-cli
+    pkgs._1password-cli
     pkgs.nodejs-slim_24
     pkgs.nodejs-slim_24.pkgs.pnpm
     pkgs.tree
