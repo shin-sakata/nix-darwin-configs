@@ -13,19 +13,6 @@
       "/Users/shin/Projects/shin-sakata"
     ]
   },
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/shin/.claude/hooks/moshi-notify.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true
