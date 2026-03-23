@@ -65,5 +65,6 @@
     "json.schemaDownload.trustedDomains": {
         "https://opencode.ai/": true,
         "https://models.dev/": true
-    }
+    },
+    "githubPullRequests.pullBranch": "never"
 }

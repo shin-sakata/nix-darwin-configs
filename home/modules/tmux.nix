@@ -6,6 +6,9 @@
     historyLimit = 50000;
     baseIndex = 1;
     extraConfig = ''
+      # ステータスバーを上に表示
+      set -g status-position top
+
       # Shift+Enter 等の修飾キー付きキーシーケンスをアプリケーションに渡す
       # always: アプリがリクエストしなくても常に転送
       # csi-u: Claude Code が期待する CSI u 形式で送信

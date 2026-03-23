@@ -115,6 +115,7 @@
               "bitwarden"
               "lm-studio"
               "melonds"
+              "finetune"
             ];
           };
         };
