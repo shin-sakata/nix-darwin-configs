@@ -95,9 +95,6 @@
               cleanup = "zap";
             };
 
-            masApps = {
-              "DaVinci Resolve" = 571213070;
-            };
 
             casks = [
               "visual-studio-code"
@@ -106,6 +103,7 @@
               "google-chrome"
               "slack"
               "ghostty"
+              "keyboardcleantool"
               "tailscale-app"
               "claude"
               "docker-desktop"

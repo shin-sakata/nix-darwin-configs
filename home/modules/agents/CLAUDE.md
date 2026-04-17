@@ -29,7 +29,7 @@
 - エディタ: VSCode
 - シェル: Zsh
 - バージョン管理: Git + 1Password SSH Agent
-- パッケージマネージャー: Nix, pnpm
+- パッケージマネージャー: Nix, vite-plus
 
 ## 並行開発
 

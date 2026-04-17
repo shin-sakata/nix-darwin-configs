@@ -33,30 +33,6 @@
 
     "terminal.integrated.defaultLocation": "editor",
     "terminal.integrated.tabs.title": "${sequence}",
-
-    // Terminal: Ghostty Default Theme
-    "workbench.colorCustomizations": {
-        "terminal.background": "#292c33",
-        "terminal.foreground": "#ffffff",
-        "terminalCursor.foreground": "#ffffff",
-        "terminal.selectionBackground": "#ffffff33",
-        "terminal.ansiBlack": "#1d1f21",
-        "terminal.ansiRed": "#bf6b69",
-        "terminal.ansiGreen": "#b7bd73",
-        "terminal.ansiYellow": "#e9c880",
-        "terminal.ansiBlue": "#88a1bb",
-        "terminal.ansiMagenta": "#ad95b8",
-        "terminal.ansiCyan": "#95bdb7",
-        "terminal.ansiWhite": "#c5c8c6",
-        "terminal.ansiBrightBlack": "#666666",
-        "terminal.ansiBrightRed": "#c55757",
-        "terminal.ansiBrightGreen": "#bcc95f",
-        "terminal.ansiBrightYellow": "#e1c65e",
-        "terminal.ansiBrightBlue": "#83a5d6",
-        "terminal.ansiBrightMagenta": "#bc99d4",
-        "terminal.ansiBrightCyan": "#83beb1",
-        "terminal.ansiBrightWhite": "#eaeaea"
-    },
     "remote.autoForwardPorts": false,
     "git.openRepositoryInParentFolders": "never",
     "git.confirmSync": false,
@@ -66,5 +42,7 @@
         "https://opencode.ai/": true,
         "https://models.dev/": true
     },
-    "githubPullRequests.pullBranch": "never"
+    "githubPullRequests.pullBranch": "never",
+    "workbench.colorTheme": "Dark Modern",
+    "typescript.experimental.useTsgo": true
 }
