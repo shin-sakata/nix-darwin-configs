@@ -95,7 +95,6 @@
               cleanup = "zap";
             };
 
-
             casks = [
               "visual-studio-code"
               "cursor"

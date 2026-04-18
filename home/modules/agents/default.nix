@@ -17,6 +17,12 @@ in
     agents.opencode
   ];
 
+  # settings.json の effortLevel では "max" が永続化されないため環境変数で設定
+  # https://github.com/anthropics/claude-code/issues/43322
+  home.sessionVariables = {
+    CLAUDE_CODE_EFFORT_LEVEL = "max";
+  };
+
   # Claude Code 用のシンボリックリンク
   home.file.".claude/commands/ralph-setup.md".source = ./commands/ralph-setup.md;
   home.file.".claude/commands/ralph-pre-setup.md".source = ./commands/ralph-pre-setup.md;
