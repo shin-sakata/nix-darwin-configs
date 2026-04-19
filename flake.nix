@@ -22,10 +22,6 @@
       url = "github:numtide/llm-agents.nix";
     };
 
-    ws-cli = {
-      url = "github:langify-org/ws-cli";
-    };
-
   };
 
   outputs =

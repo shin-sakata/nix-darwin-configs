@@ -31,11 +31,6 @@
 - バージョン管理: Git + 1Password SSH Agent
 - パッケージマネージャー: Nix, vite-plus
 
-## 並行開発
-
-- 独立した複数の変更を同一リポジトリに対して並行して行う場合、`ws` で worktree を分離せよ
-- 作業完了後は不要な worktree を削除せよ
-
 ## セキュリティ
 - SSH キーは 1Password で管理
 - Git の署名も 1Password 経由

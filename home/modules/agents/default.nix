@@ -27,7 +27,6 @@ in
   home.file.".claude/commands/ralph-setup.md".source = ./commands/ralph-setup.md;
   home.file.".claude/commands/ralph-pre-setup.md".source = ./commands/ralph-pre-setup.md;
   home.file.".claude/commands/ralph-pr.md".source = ./commands/ralph-pr.md;
-  home.file.".claude/skills/ws/SKILL.md".source = ./skills/ws/SKILL.md;
 
   # Nix store を経由せず直接シンボリックリンク
   # CLAUDE.md と settings.json は Claude Code が動的に書き換えるため
