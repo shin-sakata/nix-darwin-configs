@@ -12,7 +12,6 @@
     ./modules/direnv.nix
     ./modules/zsh.nix
     ./modules/tmux.nix
-    ./modules/neovim.nix
     ./modules/vscode.nix
   ];
 
