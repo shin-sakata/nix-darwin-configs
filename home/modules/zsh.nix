@@ -65,6 +65,25 @@
         echo "brew を直接使わないでください。flake.nix を編集して darwin-rebuild switch を実行してください。"
         return 1
       }
+
+      # 指定ポートを listen しているプロセスを kill する
+      # usage: killport <port> [port...]
+      killport() {
+        if [[ $# -eq 0 ]]; then
+          echo "usage: killport <port> [port...]" >&2
+          return 1
+        fi
+        local port pids
+        for port in "$@"; do
+          pids=$(lsof -ti tcp:"$port" -sTCP:LISTEN 2>/dev/null)
+          if [[ -z "$pids" ]]; then
+            echo "port $port: no listening process"
+            continue
+          fi
+          echo "port $port: killing PID(s) $pids"
+          echo "$pids" | xargs kill -9
+        done
+      }
     '';
   };
 }
