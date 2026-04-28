@@ -36,8 +36,8 @@ nix fmt .
 # flake 依存関係の更新
 nix flake update
 
-# 構成チェック（適用前の検証）
-sudo darwin-rebuild check --flake .
+# 構成のビルド（適用前の検証、システム変更なし。sudo 不要）
+darwin-rebuild build --flake .
 
 # 構成の適用（システム変更を伴うため慎重に。ユーザーに確認を取ること）
 sudo darwin-rebuild switch --flake .

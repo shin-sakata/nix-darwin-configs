@@ -18,5 +18,5 @@
   },
   "language": "日本語",
   "effortLevel": "xhigh",
-  "teammateMode": "tmux"
+  "preferredNotifChannel": "ghostty"
 }
