@@ -111,7 +111,7 @@
               "keyboardcleantool"
               "tailscale-app"
               "claude"
-              "docker-desktop"
+              "orbstack"
               "discord"
               "chatbox"
               "codex-app"

@@ -33,5 +33,6 @@
     pkgs.ollama
     pkgs.marp-cli
     pkgs.infisical
+    pkgs.lima
   ];
 }
