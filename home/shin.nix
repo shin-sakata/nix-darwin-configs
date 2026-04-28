@@ -13,6 +13,7 @@
     ./modules/zsh.nix
     ./modules/tmux.nix
     ./modules/vscode.nix
+    ./modules/cmux.nix
   ];
 
   xdg.enable = true;

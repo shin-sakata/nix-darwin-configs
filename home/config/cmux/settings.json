@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux-settings.schema.json",
+  "schemaVersion": 1,
+
+  // This file uses JSON with comments (JSONC).
+  // Uncomment and edit any setting to make it file-managed.
+  // Remove a setting to fall back to the value saved in Settings.
+
+  "browser": {
+    // リンクは外部ブラウザ (システムのデフォルトブラウザ = Chrome) で開く
+    "interceptTerminalOpenCommandInCmuxBrowser": false,
+    "openTerminalLinksInCmuxBrowser": false
+  },
+
+  "sidebar": {
+    // サイドバーのポート/PR リンクも外部ブラウザで開く
+    "openPortLinksInCmuxBrowser": false,
+    "openPullRequestLinksInCmuxBrowser": false
+  }
+}
