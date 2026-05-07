@@ -120,6 +120,7 @@
               "melonds"
               "finetune"
               "cmux"
+              "epic-games"
             ];
           };
         };
