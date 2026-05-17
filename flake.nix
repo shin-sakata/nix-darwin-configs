@@ -121,6 +121,7 @@
               "finetune"
               "cmux"
               "epic-games"
+              "zed"
             ];
           };
         };
