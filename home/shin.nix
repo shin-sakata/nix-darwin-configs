@@ -13,6 +13,7 @@
     ./modules/zsh.nix
     ./modules/tmux.nix
     ./modules/vscode.nix
+    ./modules/zed.nix
     ./modules/cmux.nix
   ];
 
