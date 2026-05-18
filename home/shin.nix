@@ -35,5 +35,6 @@
     pkgs.marp-cli
     pkgs.infisical
     pkgs.lima
+    pkgs.nixd
   ];
 }
