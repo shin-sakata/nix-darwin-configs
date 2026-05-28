@@ -9,7 +9,7 @@
     "window.nativeTabs": true,
 
     // Claude Code
-    "claudeCode.preferredLocation": "sidebar",
+    "claudeCode.preferredLocation": "panel",
     "claudeCode.initialPermissionMode": "bypassPermissions",
     "claudeCode.useCtrlEnterToSend": true,
 
