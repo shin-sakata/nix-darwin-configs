@@ -18,7 +18,7 @@
     "frontend-design@claude-plugins-official": true
   },
   "language": "日本語",
+  "effortLevel": "high",
   "preferredNotifChannel": "ghostty",
-  "skipAutoPermissionPrompt": true,
-  "effortLevel": "high"
+  "skipAutoPermissionPrompt": true
 }

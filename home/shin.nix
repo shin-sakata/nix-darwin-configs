@@ -10,6 +10,7 @@
     ./modules/ssh.nix
     ./modules/git.nix
     ./modules/direnv.nix
+    ./modules/mise.nix
     ./modules/zsh.nix
     ./modules/tmux.nix
     ./modules/vscode.nix
