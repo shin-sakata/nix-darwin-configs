@@ -31,7 +31,7 @@ home-manager の dotfiles は2方式を使い分けている:
 
 `home/shin.nix` がエントリーポイント。各ツールの設定は `home/modules/` 以下に分離（git, ssh, zsh, tmux, direnv, vscode, zed, cmux, agents）。
 
-- `agents/default.nix`: LLM エージェント (`claude-code` / `codex` / `opencode`) を `llm-agents.nix` flake 経由でインストール。`~/.claude/CLAUDE.md` の実体は **`home/modules/agents/CLAUDE.md`**（全プロジェクト共通のエージェント規則）で、これを編集するとグローバルなエージェント動作が変わる。ralph-* スラッシュコマンドと OpenCode 設定もここでリンク。`settings.json` で永続化されない `effortLevel` は環境変数 `CLAUDE_CODE_EFFORT_LEVEL=max` で補っている
+- `agents/default.nix`: LLM エージェント (`claude-code` / `codex` / `opencode`) を `llm-agents.nix` flake 経由でインストール。`~/.claude/CLAUDE.md` の実体は **`home/modules/agents/CLAUDE.md`**（全プロジェクト共通のエージェント規則）で、これを編集するとグローバルなエージェント動作が変わる。ralph-* スラッシュコマンドと OpenCode 設定もここでリンク。`settings.json` で永続化されない。
 
 ### 注意すべき flake inputs
 

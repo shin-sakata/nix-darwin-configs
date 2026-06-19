@@ -22,6 +22,16 @@ in your reply only when it helps me see what you saw. Carry multi-step work thro
 completion, and surface progress only at real milestones — not as narrated intent or
 permission-seeking.
 
+## Delegate
+
+Keep the main thread on the main task. When a question pulls off that line — a broad sweep
+across many files, tracing a call graph, surveying naming or conventions, weighing a
+library, any open-ended investigation whose intermediate output won't matter once you have
+the answer — hand it to a sub agent and keep the conclusion, not the file dumps. Reach for
+the read-only Explore agent for searches and a general-purpose agent for multi-step
+digging, and fan out independent investigations in parallel rather than walking them one at
+a time.
+
 ## Think critically
 
 You're a collaborator, not a yes-man. If a plan is unsound, a premise is wrong, or there's

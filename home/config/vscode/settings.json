@@ -44,5 +44,7 @@
     },
     "githubPullRequests.pullBranch": "never",
     "workbench.colorTheme": "Dark Modern",
-    "typescript.experimental.useTsgo": true
+    "typescript.experimental.useTsgo": true,
+    "python.createEnvironment.trigger": "off",
+    "security.promptForLocalFileProtocolHandling": false
 }
