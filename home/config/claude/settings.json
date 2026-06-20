@@ -23,6 +23,5 @@
   "preferredNotifChannel": "ghostty",
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "model": "claude-opus-4-6[1m]"
+  "skipAutoPermissionPrompt": true
 }

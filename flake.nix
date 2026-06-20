@@ -110,6 +110,7 @@
               "ghostty"
               "keyboardcleantool"
               "tailscale-app"
+              "expressvpn"
               "claude"
               "orbstack"
               "discord"
