@@ -22,11 +22,6 @@
       url = "github:numtide/llm-agents.nix";
     };
 
-    homebrew-cmux = {
-      url = "github:manaflow-ai/homebrew-cmux";
-      flake = false;
-    };
-
   };
 
   outputs =
@@ -36,7 +31,6 @@
       nixpkgs,
       home-manager,
       nix-homebrew,
-      homebrew-cmux,
       ...
     }:
     let
@@ -97,32 +91,19 @@
               cleanup = "zap";
             };
 
-            taps = [
-              "manaflow-ai/cmux"
-            ];
-
             casks = [
               "visual-studio-code"
-              "cursor"
               "1password"
               "google-chrome"
               "slack"
               "ghostty"
               "keyboardcleantool"
               "tailscale-app"
-              "expressvpn"
               "claude"
               "orbstack"
               "discord"
-              "chatbox"
               "codex-app"
-              "bitwarden"
               "lm-studio"
-              "melonds"
-              "finetune"
-              "cmux"
-              "epic-games"
-              "zed"
             ];
           };
         };
@@ -140,9 +121,6 @@
               enable = true;
               user = "shin";
               autoMigrate = true;
-              taps = {
-                "manaflow-ai/homebrew-cmux" = homebrew-cmux;
-              };
               mutableTaps = false;
             };
           }

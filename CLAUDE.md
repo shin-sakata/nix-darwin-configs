@@ -23,20 +23,19 @@ shin の M5 MacBook Pro (aarch64-darwin) の構成管理リポジトリ。すべ
 home-manager の dotfiles は2方式を使い分けている:
 
 1. **Nix store 経由（通常）**: モジュール内で宣言した設定（例: `programs.git.settings`、`programs.zsh`）。ビルド時に store に焼き込まれ、読み取り専用でリンクされる。変更には `darwin-rebuild switch` が必要
-2. **アウトオブストア・シンボリックリンク** (`config.lib.file.mkOutOfStoreSymlink`): **アプリ自身が動的に書き換える**設定ファイルを、Nix store を経由せずリポジトリ内の実ファイルへ直接リンクする。対象は Claude Code (`~/.claude/CLAUDE.md`, `settings.json`)、VSCode、Zed、cmux、OpenCode の各設定。`darwin-rebuild` なしでアプリが設定を書き換えられ、その変更がそのままリポジトリに反映される
+2. **アウトオブストア・シンボリックリンク** (`config.lib.file.mkOutOfStoreSymlink`): **アプリ自身が動的に書き換える**設定ファイルを、Nix store を経由せずリポジトリ内の実ファイルへ直接リンクする。対象は Claude Code (`~/.claude/CLAUDE.md`, `settings.json`)、VSCode、OpenCode の各設定。`darwin-rebuild` なしでアプリが設定を書き換えられ、その変更がそのままリポジトリに反映される
 
 方式2は `flakeRelPath`（`flake.nix` の `home-manager.extraSpecialArgs` で各モジュールに渡される相対パス `Projects/shin-sakata/nix-darwin`）に依存する。これが冒頭の「配置場所固定」の理由。
 
 ### home-manager モジュール構成
 
-`home/shin.nix` がエントリーポイント。各ツールの設定は `home/modules/` 以下に分離（git, ssh, zsh, tmux, direnv, vscode, zed, cmux, agents）。
+`home/shin.nix` がエントリーポイント。各ツールの設定は `home/modules/` 以下に分離（git, ssh, zsh, tmux, direnv, vscode, agents）。
 
 - `agents/default.nix`: LLM エージェント (`claude-code` / `codex` / `opencode`) を `llm-agents.nix` flake 経由でインストール。`~/.claude/CLAUDE.md` の実体は **`home/modules/agents/CLAUDE.md`**（全プロジェクト共通のエージェント規則）で、これを編集するとグローバルなエージェント動作が変わる。ralph-* スラッシュコマンドと OpenCode 設定もここでリンク。`settings.json` で永続化されない。
 
 ### 注意すべき flake inputs
 
 - `llm-agents` (`github:numtide/llm-agents.nix`): LLM エージェント (claude-code/codex/opencode) の提供元。バイナリキャッシュ `cache.numtide.com` を substituter に設定済み
-- `homebrew-cmux` (`flake = false`): cmux 用 Homebrew tap のソース。`nix-homebrew` の `taps` に渡している
 
 ## コマンド
 
