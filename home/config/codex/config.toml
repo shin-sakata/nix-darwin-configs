@@ -1,0 +1,201 @@
+model = "fugu-ultra"
+model_reasoning_effort = "high"
+model_provider = "sakana"
+model_catalog_json = "/Users/shin/.codex/fugu.json"
+personality = "friendly"
+approvals_reviewer = "user"
+notify = [
+    "/Users/shin/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
+    "turn-ended",
+]
+sandbox_mode = "workspace-write"
+
+[model_providers.sakana]
+name = "Sakana API"
+base_url = "http://127.0.0.1:8787/v1"
+wire_api = "responses"
+stream_idle_timeout_ms = 7200000
+stream_max_retries = 5
+request_max_retries = 4
+
+[model_providers.sakana.auth]
+command = "/etc/profiles/per-user/shin/bin/op"
+args = [
+    "read",
+    "op://Personal/Sakana/credential",
+]
+timeout_ms = 5000
+refresh_interval_ms = 300000
+
+[projects."/Users/shin/Projects/shin-sakata/nix-darwin"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/shin-sakata/nexus-notebook"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/shin-sakata/effect-ts-playground"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/shin-sakata/effect-ai-client"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/shin-sakata/effect-agent-sdk"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/spirinc/aic"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/shin-sakata/creator-site"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/spirinc/aic-template"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Documents/Codex/2026-06-06/codex"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Documents/Codex/2026-06-06/anthropic-ai"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/spirinc/web"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Documents/rnd"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Documents/Codex/2026-06-10/rtx-spark-ryzen-ai-max-395"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Documents/Codex/2026-06-21/cod"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/seikyu"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Documents/Codex/2026-06-22/cod"]
+trust_level = "trusted"
+
+[projects."/Users/shin/Projects/shin-sakata/ai-character"]
+trust_level = "trusted"
+
+[projects."/private/tmp"]
+trust_level = "trusted"
+
+[notice]
+hide_full_access_warning = true
+
+[notice.model_migrations]
+"gpt-5.2" = "gpt-5.2-codex"
+"gpt-5.3-codex" = "gpt-5.4"
+"gpt-5.4" = "gpt-5.5"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[marketplaces.openai-bundled]
+last_updated = "2026-06-23T03:31:17Z"
+source_type = "local"
+source = "/Users/shin/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-06-23T02:36:45Z"
+source_type = "local"
+source = "/Users/shin/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[marketplaces.claude-plugins-official]
+last_updated = "2026-06-23T01:24:58Z"
+last_revision = "f57f28050818b8ee4558996d16cb925e47661a5c"
+source_type = "git"
+source = "https://github.com/anthropics/claude-plugins-official.git"
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."notion@openai-curated"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."frontend-design@claude-plugins-official"]
+enabled = true
+
+[plugins."slack@claude-plugins-official"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[desktop]
+keepRemoteControlAwakeWhilePluggedIn = true
+preventSleepWhileRunning = true
+reviewDelivery = "inline"
+show-context-window-usage = false
+followUpQueueMode = "steer"
+composerEnterBehavior = "cmdIfMultiline"
+notifications-turn-mode = "unfocused"
+conversationDetailMode = "STEPS_PROSE"
+
+[desktop.open-in-target-preferences]
+global = "vscode"
+
+[desktop.open-in-target-preferences.perPath]
+"/Users/shin/Projects/shin-sakata/nexus-notebook" = "vscode"
+"/Users/shin/Projects/spirinc/web/release" = "vscode"
+
+[features]
+js_repl = false
+memories = true
+# Sakana (fugu) の Responses API は hosted tool の image_generation を受け付けない
+# (function/custom のみ対応)。有効だと tools 配列に image_generation が混入し
+# リクエスト全体が 400 で弾かれるため無効化する。
+# 注意: これは全モデル共通設定。gpt-5 等でも Codex の画像生成は使えなくなる。
+image_generation = false
+
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/shin/.codex"
+CODEX_HOME = "/Users/shin/.codex"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "5ee3754ef68f803b9cebf40e30f94ea22aaf446de1a0a24b109180fa2ae0bd3e"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.616.71553"
+CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
+
+[memories]
+generate_memories = true
+use_memories = true
+disable_on_external_context = true
+
+[sandbox_workspace_write]
+network_access = false
+
+[shell_environment_policy]
+inherit = "core"
+
+[shell_environment_policy.set]
+CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"

@@ -46,5 +46,6 @@
     "workbench.colorTheme": "Dark Modern",
     "typescript.experimental.useTsgo": true,
     "python.createEnvironment.trigger": "off",
-    "security.promptForLocalFileProtocolHandling": false
+    "security.promptForLocalFileProtocolHandling": false,
+    "workbench.editor.useModal": "some"
 }
