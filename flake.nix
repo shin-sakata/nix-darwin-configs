@@ -22,6 +22,11 @@
       url = "github:numtide/llm-agents.nix";
     };
 
+    mise = {
+      url = "github:jdx/mise";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
