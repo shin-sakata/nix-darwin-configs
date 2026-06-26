@@ -81,6 +81,9 @@ trust_level = "trusted"
 [projects."/private/tmp"]
 trust_level = "trusted"
 
+[projects."/Users/shin/Documents/Codex/2026-06-25/dc"]
+trust_level = "trusted"
+
 [notice]
 hide_full_access_warning = true
 
@@ -93,18 +96,18 @@ hide_full_access_warning = true
 "gpt-5.5" = 4
 
 [marketplaces.openai-bundled]
-last_updated = "2026-06-23T03:31:17Z"
+last_updated = "2026-06-26T00:28:43Z"
 source_type = "local"
 source = "/Users/shin/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-06-23T02:36:45Z"
+last_updated = "2026-06-24T05:36:19Z"
 source_type = "local"
 source = "/Users/shin/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.claude-plugins-official]
-last_updated = "2026-06-23T01:24:58Z"
-last_revision = "f57f28050818b8ee4558996d16cb925e47661a5c"
+last_updated = "2026-06-26T00:28:42Z"
+last_revision = "6b93bc00d3753cacd3ad6f52a55c524813cd989e"
 source_type = "git"
 source = "https://github.com/anthropics/claude-plugins-official.git"
 
@@ -178,12 +181,12 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_nod
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/shin/.codex"
 CODEX_HOME = "/Users/shin/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "5ee3754ef68f803b9cebf40e30f94ea22aaf446de1a0a24b109180fa2ae0bd3e"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "47e4e79498666e677abe0583e69522464d31b5b5f28db65052a91c9cbd3281e9"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.616.71553"
+BROWSER_USE_CODEX_APP_VERSION = "26.623.30605"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [memories]
