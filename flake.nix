@@ -109,6 +109,7 @@
               "discord"
               "codex-app"
               "lm-studio"
+              "typeless"
             ];
           };
         };
