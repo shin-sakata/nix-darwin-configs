@@ -35,5 +35,7 @@
     pkgs.infisical
     pkgs.lima
     pkgs.nixd
+    pkgs.nodejs # pnpm dlx で起動するツール（MCP Inspector 等）の node ランタイム
+    pkgs.pnpm # `pnpm dlx @modelcontextprotocol/inspector` で MCP Inspector を起動
   ];
 }
