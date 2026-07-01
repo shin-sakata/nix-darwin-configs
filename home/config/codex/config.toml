@@ -1,5 +1,5 @@
 model = "fugu-ultra"
-model_reasoning_effort = "high"
+model_reasoning_effort = "max"
 model_provider = "sakana"
 model_catalog_json = "/Users/shin/.codex/fugu.json"
 personality = "friendly"
@@ -96,7 +96,7 @@ hide_full_access_warning = true
 "gpt-5.5" = 4
 
 [marketplaces.openai-bundled]
-last_updated = "2026-06-26T00:28:43Z"
+last_updated = "2026-06-28T06:34:13Z"
 source_type = "local"
 source = "/Users/shin/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
@@ -106,8 +106,8 @@ source_type = "local"
 source = "/Users/shin/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.claude-plugins-official]
-last_updated = "2026-06-26T00:28:42Z"
-last_revision = "6b93bc00d3753cacd3ad6f52a55c524813cd989e"
+last_updated = "2026-06-28T05:18:46Z"
+last_revision = "30a213f9b39e3c40b0073bb5b41081da9f2b6634"
 source_type = "git"
 source = "https://github.com/anthropics/claude-plugins-official.git"
 
@@ -181,12 +181,12 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_nod
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/shin/.codex"
 CODEX_HOME = "/Users/shin/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "47e4e79498666e677abe0583e69522464d31b5b5f28db65052a91c9cbd3281e9"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "59e7bb81812ddd5f102e1d580335166e552c91686b5726218a985b59b4f89ca1"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.623.30605"
+BROWSER_USE_CODEX_APP_VERSION = "26.623.42026"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [memories]
