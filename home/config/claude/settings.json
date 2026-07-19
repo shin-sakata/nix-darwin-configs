@@ -14,11 +14,12 @@
       "/Users/shin/Projects/shin-sakata"
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "opus[1m]",
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true
   },
   "language": "日本語",
+  "effortLevel": "xhigh",
   "tui": "fullscreen",
   "showThinkingSummaries": true,
   "skipWorkflowUsageWarning": true,

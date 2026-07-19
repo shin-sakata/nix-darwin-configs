@@ -96,18 +96,18 @@ hide_full_access_warning = true
 "gpt-5.5" = 4
 
 [marketplaces.openai-bundled]
-last_updated = "2026-06-28T06:34:13Z"
+last_updated = "2026-07-08T01:32:43Z"
 source_type = "local"
 source = "/Users/shin/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-06-24T05:36:19Z"
+last_updated = "2026-07-08T01:36:36Z"
 source_type = "local"
 source = "/Users/shin/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.claude-plugins-official]
-last_updated = "2026-06-28T05:18:46Z"
-last_revision = "30a213f9b39e3c40b0073bb5b41081da9f2b6634"
+last_updated = "2026-07-19T06:51:14Z"
+last_revision = "e09c3b1e5f6e8edbe2cdaf55b5dc38cf87824389"
 source_type = "git"
 source = "https://github.com/anthropics/claude-plugins-official.git"
 
@@ -181,12 +181,12 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_nod
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/shin/.codex"
 CODEX_HOME = "/Users/shin/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "59e7bb81812ddd5f102e1d580335166e552c91686b5726218a985b59b4f89ca1"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "a05cdd282c2717f076e11bc0e94b7b20e1fc4759dbe28440bd1c734953606a56"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.623.42026"
+BROWSER_USE_CODEX_APP_VERSION = "26.623.61825"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [memories]
